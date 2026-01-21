@@ -6,7 +6,27 @@
     <title>Site Admin</title>
   </head>
   <body>
-    <!-- Netlify CMS will mount here -->
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:18px;">
+      <div id="identity-login">
+        <button id="netlify-login" style="padding:10px 16px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;color:#0f172a;font-weight:700;cursor:pointer;">Log in / Sign up</button>
+      </div>
+      <div style="color:#94a3b8;font-size:0.95rem;">Netlify CMS</div>
+    </div>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      (function(){
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.init();
+          document.getElementById('netlify-login').addEventListener('click', function(){
+            window.netlifyIdentity.open();
+          });
+          window.netlifyIdentity.on('login', function() { window.location.reload(); });
+          window.netlifyIdentity.on('logout', function() { window.location.reload(); });
+        }
+      })();
+    </script>
+
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   </body>
 </html>
