@@ -1,0 +1,43 @@
+{
+  "headline": "How Does Your Strategy Stack Up Against 2026 Market Reality?",
+  "subheadline": "Take this 8-question audit to see where you stand and what to fix first.",
+  "emailGateTitle": "Get Your Personalized Results",
+  "emailGateSubtitle": "Enter your email to see your score and action plan",
+  "convertKitFormId": "8975679",
+  "convertKitApiKey": "kit_6d1448764627b0fa1dfa960f512981c4",
+  "bookingText": "Want help closing these gaps?",
+  "bookingLinkText": "→ Book a Strategy Call",
+  "bookingLinkUrl": "https://calendly.com/your-link",
+  "questions": [
+    {
+      "id": "q1",
+      "category": "Email Strategy",
+      "question": "1. How do you currently measure email performance?",
+      "options": [
+        { "value": "none", "points": 0, "title": "Currently not measuring", "desc": "Not tracking performance metrics, triggers, or events" },
+        { "value": "opens", "points": 0.25, "title": "Open rates (primary metric)", "desc": "This is our main KPI" },
+        { "value": "clicks", "points": 0.25, "title": "Clicks & conversions", "desc": "Shifted away from opens as primary" },
+        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You are measuring revenue impact not vanity metrics." }, "gapIfNotChosen": { "title": "Email Metrics Gap", "desc": "Open rates became less reliable after privacy changes. Strong teams prioritize clicks conversions and revenue per send.", "trend": "Deliverability is increasingly tied to engagement quality not vanity metrics." } }
+      ]
+    },
+    {
+      "id": "q2",
+      "category": "Email Personalization",
+      "question": "2. How personalized is your email program?",
+      "options": [
+        { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
+        { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role company size or past purchase" },
+        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency engagement depth LTV dynamic content and automated journeys", "strength": { "title": "Behavioral Personalization", "desc": "Behavioral personalization plus automated sequences puts you near the top tier." }, "gapIfNotChosen": { "title": "Personalization Gap", "desc": "Basic segmentation helps but behavior-based personalization + automated sequences is the new baseline for relevance.", "trend": "Expectations have shifted toward lifecycle automation and engagement-based segmentation." } }
+      ]
+    }
+  ],
+  "actionPlanRules": [
+    { "triggerGaps": ["Email Metrics", "Personalization"], "actions": [ { "title": "Shift email KPIs to clicks conversions and revenue-per-send", "desc": "Keep opens as directional only. Optimize segmentation and offers around outcomes.", "priority": "high" } ] },
+    { "triggerGaps": ["Email Metrics", "Personalization"], "actions": [ { "title": "Add behavioral segmentation + automated email sequences", "desc": "Build flows for active at-risk and dormant segments; trigger sequences from clicks visits and key events.", "priority": "medium" } ] }
+  ],
+  "scoreTiers": [
+    { "minScore": 75, "title": "Your strategy is strong", "subtitle": "You're ahead of most. Focus on compounding your advantages.", "color": "strong" },
+    { "minScore": 50, "title": "Moderate Alignment", "subtitle": "You have a solid foundation. Closing a few gaps could unlock growth.", "color": "medium" },
+    { "minScore": 0, "title": "You're missing out", "subtitle": "There is untapped leverage and strategic shifts that could materially improve your results.", "color": "weak" }
+  ]
+}

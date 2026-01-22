@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Site Admin</title>
+  </head>
+  <body>
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:18px;">
+      <div id="identity-login">
+        <button id="netlify-login" style="padding:10px 16px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;color:#0f172a;font-weight:700;cursor:pointer;">Log in / Sign up</button>
+      </div>
+      <div style="color:#94a3b8;font-size:0.95rem;">Netlify CMS</div>
+
+      <div id="identity-debug" style="margin-top:18px;padding:12px;border-radius:8px;background:#fff;border:1px solid #e6eef8;max-width:760px;width:100%;font-family:monospace;white-space:pre-wrap;font-size:12px;display:none;">
+        <div><strong>Identity debug</strong></div>
+        <div id="identity-status" style="margin-top:8px;color:#334155">Not logged in</div>
+        <div style="margin-top:8px;"><button id="open-cms" style="padding:8px 12px;border-radius:6px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;">Open CMS</button></div>
+        <div id="identity-json" style="margin-top:8px;color:#0f172a;display:none"></div>
+        <div id="identity-note" style="margin-top:8px;color:#475569;font-size:13px;">If you're logged in but the CMS UI doesn't appear, enable <strong>Identity → Services → Git Gateway</strong> in your Netlify site settings and authorize GitHub.</div>
+      </div>
+    </div>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      (function(){
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.init();
+
+          document.getElementById('netlify-login').addEventListener('click', function(){
+            window.netlifyIdentity.open();
+          });
+
+          window.netlifyIdentity.on('login', function() { window.location.reload(); });
+          window.netlifyIdentity.on('logout', function() { window.location.reload(); });
+
+          function showIdentityDebug() {
+            try {
+              const debug = document.getElementById('identity-debug');
+              const status = document.getElementById('identity-status');
+              const json = document.getElementById('identity-json');
+              const openBtn = document.getElementById('open-cms');
+              if (!debug || !status || !json) return;
+              const user = window.netlifyIdentity.currentUser();
+              if (user) {
+                debug.style.display = 'block';
+                status.textContent = 'Logged in as: ' + (user.email || (user.user_metadata && user.user_metadata.full_name) || '(no email)');
+                json.style.display = 'block';
+                json.textContent = JSON.stringify(user, null, 2);
+              } else {
+                debug.style.display = 'block';
+                status.textContent = 'Not logged in';
+                json.style.display = 'none';
+                json.textContent = '';
+              }
+              openBtn.addEventListener('click', () => {
+                window.location.href = '/admin/#/collections';
+              });
+            } catch (e) { console.warn('identity debug failed', e); }
+          }
+
+          // show debug on init
+          showIdentityDebug();
+
+          // show debug again after a short delay to catch token processing
+          setTimeout(showIdentityDebug, 800);
+
+          // If we were opened via a magic-link confirmation token,
+          // open the widget so it can process the token and then reload
+          // once the user is available. This helps when the automatic
+          // confirmation flow doesn't immediately update the UI.
+          try {
+            if (window.location.hash && window.location.hash.includes('confirmation_token=')) {
+              // Open the widget (it will process the token)
+              window.netlifyIdentity.open();
+
+              // Poll for the current user to appear, then clear the hash and reload
+              const poll = setInterval(() => {
+                try {
+                  const u = window.netlifyIdentity.currentUser();
+                  if (u) {
+                    clearInterval(poll);
+                    // remove token from URL
+                    history.replaceState(null, '', window.location.pathname + window.location.search + '#');
+                    window.location.reload();
+                  }
+                } catch (e) {
+                  // ignore and keep polling
+                }
+              }, 500);
+            }
+          } catch (e) {
+            console.warn('Error handling confirmation token', e);
+          }
+        }
+      })();
+    </script>
+
+    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  </body>
+</html>
