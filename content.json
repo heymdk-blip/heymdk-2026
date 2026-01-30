@@ -1,6 +1,5 @@
-{"version":"1.0.0",
-
-
+{
+  "version": "1.0.0",
   "headline": "How Does Your Strategy Stack Up Against 2026 Market Trends?",
   "subheadline": "Take this 5-minute assessment to see what to prioritize first.",
   "emailGateTitle": "Get Your Personalized Results",
@@ -19,7 +18,7 @@
         { "value": "none", "points": 0, "title": "Currently not measuring", "desc": "Not tracking performance metrics, triggers, or events" },
         { "value": "opens", "points": 0.25, "title": "Open rates (primary metric)", "desc": "This is our main KPI" },
         { "value": "clicks", "points": 0.25, "title": "Clicks & conversions", "desc": "Shifted away from opens as primary" },
-        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You are measuring revenue impact not vanity metrics." }, "gapIfNotChosen": { "title": "Email Metrics Gap", "desc": "Open rates became less reliable after privacy changes. Strong teams prioritize clicks conversions and revenue per send.", "trend": "Deliverability is increasingly tied to engagement quality not vanity metrics." } }
+        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You measure revenue impact per send." } }
       ]
     },
     {
@@ -28,8 +27,8 @@
       "question": "2. How personalized are your emails?",
       "options": [
         { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
-        { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role company size or past purchase" },
-        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency engagement depth LTV dynamic content and automated journeys", "strength": { "title": "Behavioral Personalization", "desc": "Behavioral personalization plus automated sequences puts you near the top tier." }, "gapIfNotChosen": { "title": "Personalization Gap", "desc": "Basic segmentation helps but behavior-based personalization + automated sequences is the new baseline for relevance.", "trend": "Expectations have shifted toward lifecycle automation and engagement-based segmentation." } }
+        { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role, company size, or past purchase" },
+        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency, engagement depth, LTV, dynamic content and automated journeys", "strength": { "title": "Personalization", "desc": "You use behavioral personalization and automations." } }
       ]
     },
     {
@@ -40,7 +39,7 @@
         { "value": "none", "points": 0, "title": "Currently have no tracking system", "desc": "May or may not have an email opt-in, but not using it" },
         { "value": "leak", "points": 0.25, "title": "We mostly lose them", "desc": "We get traffic but have limited tracking/capture and no consistent follow-up" },
         { "value": "capture", "points": 0.5, "title": "We capture some intent + do manual follow-up", "desc": "Basic tracking + forms; follow-up happens but it's inconsistent" },
-        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing case study demo page) trigger email/retargeting follow-ups for non-bookers", "strength": { "title": "Intent Capture + Follow-Up", "desc": "You capture site intent and trigger follow-ups for non-bookers." }, "gapIfNotChosen": { "title": "Website Intent Capture Gap", "desc": "If traffic lands and leaves with no capture you are paying for attention without building a follow-up asset.", "trend": "First-party data + intent signals are becoming the core advantage for personalization and timing." } }
+        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing/case study/demo page) trigger email/retargeting follow-up" }
       ]
     },
     {
@@ -48,10 +47,10 @@
       "category": "Lead Follow-Up System",
       "question": "4. How do you keep interested leads from slipping through the cracks?",
       "options": [
-        { "value": "ad-hoc", "points": 0, "title": "Adhoc", "desc": "Manual reminders and memory-based follow-up" },
+        { "value": "ad-hoc", "points": 0, "title": "Ad-hoc", "desc": "Manual reminders and memory-based follow-up" },
         { "value": "mapped", "points": 0.5, "title": "Documented but not automated", "desc": "We know the steps but execution is inconsistent" },
-        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-Up Triggers", "desc": "You use triggers so interested leads get a timely next step." }, "gapIfNotChosen": { "title": "Lead Follow-Up Gap", "desc": "Manual follow-up leads to inconsistent execution missed timing and lost opportunities.", "trend": "Behavior-triggered follow-up systems reduce leakage and improve conversion rates." } },
-        { "value": "crm", "points": 1, "title": "We have behavior-based segmentation and track of all of our communications with our clients, customers, and prospects alongside regular touchpoints", "desc": "", "strength": { "title": "Follow-Up Triggers", "desc": "You use triggers so interested leads get a timely next step." }, "gapIfNotChosen": { "title": "Lead Follow-Up Gap", "desc": "Manual follow-up leads to inconsistent execution missed timing and lost opportunities.", "trend": "Behavior-triggered follow-up systems reduce leakage and improve conversion rates." } }
+        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-up System", "desc": "You have automated follow-up triggers." } },
+        { "value": "crm", "points": 1, "title": "Rich CRM + behavior-based segmentation", "desc": "We track communications and use behavior-based segmentation" }
       ]
     },
     {
@@ -62,17 +61,17 @@
         { "value": "unsure", "points": 0, "title": "Not sure", "desc": "Do not have a system or not actively tracking" },
         { "value": "acq-heavy", "points": 0.25, "title": "80%+ new 20% or less existing", "desc": "New customers are the main source of revenue" },
         { "value": "balanced", "points": 0.25, "title": "50/50 split", "desc": "Both generate an equal amount of revenue" },
-        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You treat retention and expansion as core growth." }, "gapIfNotChosen": { "title": "LTV & Retention Gap", "desc": "Teams that over-prioritize acquisition often miss compounding growth from retention and expansion.", "trend": "Retention and expansion are increasingly treated as primary growth levers." } }
+        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You prioritize retention and expansion." } }
       ]
     },
     {
       "id": "q6",
       "category": "Owned Distribution",
-      "question": "6. Do you have an owned distribution channel (newsletter community audience)?",
+      "question": "6. Do you have an owned distribution channel (newsletter, community, audience)?",
       "options": [
         { "value": "none", "points": 0, "title": "No", "desc": "Rely on paid reach + outbound" },
-        { "value": "basic", "points": 0.5, "title": "Starting one", "desc": "Early newsletter early audience building" },
-        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a compounding asset that reliably reaches your market." }, "gapIfNotChosen": { "title": "Owned Distribution Gap", "desc": "Without an owned channel you depend on paid reach and outbound effort for attention.", "trend": "Owned audiences reduce CAC and create compounding distribution." } }
+        { "value": "basic", "points": 0.5, "title": "Starting one", "desc": "Early newsletter / early audience building" },
+        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a channel that compounds attention." } }
       ]
     },
     {
@@ -82,7 +81,7 @@
       "options": [
         { "value": "isolated", "points": 0, "title": "Isolated tactics", "desc": "Email OR ads OR LinkedIn; focused on individual channel strategies" },
         { "value": "coordinated", "points": 0.5, "title": "Coordinated across 2–3 channels", "desc": "Some synergy but not fully integrated" },
-        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem Distribution", "desc": "Owned + earned + paid channels are aligned." }, "gapIfNotChosen": { "title": "Distribution & Ecosystem Gap", "desc": "Isolated channels underperform integrated ecosystems where channels feed each other.", "trend": "Community and owned distribution increasingly compete with paid reach." } }
+        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem", "desc": "You have an integrated channel strategy." } }
       ]
     },
     {
@@ -91,26 +90,50 @@
       "question": "8. How do you build credibility with cold/warm prospects?",
       "options": [
         { "value": "pitch", "points": 0, "title": "Product-first", "desc": "Lead with services, features, benefits, and / or pricing" },
-        { "value": "proof", "points": 0.5, "title": "Proof-driven", "desc": "Utilize case studies, results, testimonials to demonstrate expertise and build credibility" },
-        { "value": "trust", "points": 0.5, "title": "Trust-first, brand-focused", "desc": "Lead with insights and brand awareness, building trust through credibility and growing brand presence" },
-        { "value": "customer-first", "points": 1, "title": "Customer-focused, consistent visible thought leadership, case studies, and education", "desc": "Established founder and / or executive presence, regularly share education, case studies, and resources based on insights and feedback loops", "strength": { "title": "Customer-First, Trust-Focused Positioning", "desc": "You're customer focused and insight-driven, regularly building and maintaining relationships with new & existing clients / customers to consistently provide valuable education, resources, and thought leadership." }, "gapIfNotChosen": { "title": "Positioning Gap", "desc": "Leading with product details can underperform leading with education, insights, and thought leadership based on the current landscape and regular feedback loops.", "trend": "Trust is increasingly built through building relationships with new and existing clients / customers or prospects, visible founder or executive presence, providing value and education, proof of expertise, and credible distribution with an obvious focus and clear understanding of the customer." } 
+        { "value": "proof", "points": 0.5, "title": "Proof-driven", "desc": "Utilize case studies, results, testimonials to demonstrate expertise" },
+        { "value": "trust", "points": 0.5, "title": "Trust-first, brand-focused", "desc": "Lead with insights and brand awareness" },
+        { "value": "customer-first", "points": 1, "title": "Customer-focused", "desc": "Consistent visible thought leadership, case studies, and education" }
       ]
     }
   ],
   "actionPlanRules": [
-    { "triggerGaps": ["Email Metrics", "Personalization"], "actions": [ { "title": "Shift email KPIs to clicks conversions and revenue-per-send", "desc": "Keep opens as directional only. Optimize segmentation and offers around outcomes.", "priority": "high" } ] },
-    { "triggerGaps": ["Email Metrics", "Personalization"], "actions": [ { "title": "Add behavioral segmentation + automated email sequences", "desc": "Build flows for active at-risk and dormant segments; trigger sequences from clicks visits and key events.", "priority": "medium" } ] },
-    { "triggerGaps": ["Website Intent"], "actions": [ { "title": "Capture website intent and follow up with non-bookers", "desc": "Track key events (pricing demo case studies). Trigger email (and optional retargeting) for visitors who did not book.", "priority": "high" } ] },
-    { "triggerGaps": ["Lead Follow-Up"], "actions": [ { "title": "Build a simple follow-up trigger system", "desc": "Create rules for no-shows abandoned booking pages pricing views and clicked but didn't book outcomes.", "priority": "medium" } ] },
-    { "triggerGaps": ["LTV"], "actions": [ { "title": "Rebalance toward retention and expansion", "desc": "Formalize onboarding adoption nudges renewal sequences and expansion offers.", "priority": "low" } ] },
-    { "triggerGaps": ["Distribution", "Owned Distribution", "Ecosystem"], "actions": [ { "title": "Start or strengthen an owned channel", "desc": "Newsletter or community that compounds attention and reduces paid dependency.", "priority": "low" } ] }
+    {
+      "triggerGaps": ["Email Metrics", "Personalization"],
+      "actions": [
+        { "title": "Shift email KPIs to clicks, conversions and revenue-per-send", "desc": "Keep opens as directional only. Optimize toward revenue impact." },
+        { "title": "Add behavioral segmentation + automated email sequences", "desc": "Build flows for active, at-risk, and dormant segments." }
+      ]
+    },
+    {
+      "triggerGaps": ["Website Intent"],
+      "actions": [
+        { "title": "Capture website intent and follow up with non-bookers", "desc": "Track key events (pricing/demo/case study). Trigger email and retargeting." }
+      ]
+    },
+    {
+      "triggerGaps": ["Lead Follow-Up"],
+      "actions": [
+        { "title": "Build a simple follow-up trigger system", "desc": "Create rules for no-shows, abandoned booking pages and pricing views." }
+      ]
+    },
+    {
+      "triggerGaps": ["LTV"],
+      "actions": [
+        { "title": "Rebalance toward retention and expansion", "desc": "Formalize onboarding, adoption nudges, renewal sequences and expansion offers.", "priority": "high" }
+      ]
+    },
+    {
+      "triggerGaps": ["Distribution", "Owned Distribution", "Ecosystem"],
+      "actions": [
+        { "title": "Start or strengthen an owned channel", "desc": "Newsletter or community that compounds attention over time." }
+      ]
+    }
   ],
   "scoreTiers": [
     { "minScore": 75, "title": "Your strategy is strong. What's your next move?", "subtitle": "You're ahead of most. Focus on compounding your advantages.", "color": "strong" },
     { "minScore": 50, "title": "There's room for improvement", "subtitle": "You have a solid foundation. Closing a few gaps could unlock growth.", "color": "medium" },
     { "minScore": 0, "title": "We should talk", "subtitle": "There is untapped leverage and strategic shifts that could materially improve your results.", "color": "weak" }
-  ]
-}
+  ],
   "resultsHeadline": "Your Results — Priorities & Gaps",
   "resultsSubheadline": "<strong>2026 Reality:</strong> Deliverability is increasingly tied to engagement quality not vanity metrics."
 }
