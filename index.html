@@ -507,7 +507,7 @@ const CONTENT = {
   // Try to load external content.json to make editing easy.
   try {
     // cache-bust to pick up the latest edits quickly when testing/iterating
-    const res = await fetch(`content.json?v=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch(`/content.json?v=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const external = await res.json();
 
@@ -531,7 +531,7 @@ const CONTENT = {
     }
   } catch (e) {
     // ignore - fallback to inline CONTENT
-    console.warn('No external content.json loaded, using embedded content');
+    console.warn('No external /content.json loaded, using embedded content');
   }
 
   const urlParams = new URLSearchParams(window.location.search);
