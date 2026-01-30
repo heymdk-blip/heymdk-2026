@@ -481,19 +481,133 @@ const CONTENT = {
   bookingLinkText: "→ Book a Strategy Call",
   bookingLinkUrl: "https://calendly.com/your-link",
 
-  // Questions (example; trimmed here in this block for brevity - original full content should remain)
+  // Questions (embedded from content.json)
   questions: [
-    /* ... full questions array (unchanged) ... */
+    {
+      "id": "q1",
+      "category": "Email Strategy",
+      "question": "1. How do you currently measure email performance?",
+      "options": [
+        { "value": "none", "points": 0, "title": "Currently not measuring", "desc": "Not tracking performance metrics, triggers, or events" },
+        { "value": "opens", "points": 0.25, "title": "Open rates (primary metric)", "desc": "This is our main KPI" },
+        { "value": "clicks", "points": 0.25, "title": "Clicks & conversions", "desc": "Shifted away from opens as primary" },
+        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You measure revenue impact per send." } }
+      ]
+    },
+    {
+      "id": "q2",
+      "category": "Email Personalization",
+      "question": "2. How personalized are your emails?",
+      "options": [
+        { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
+        { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role, company size, or past purchase" },
+        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency, engagement depth, LTV, dynamic content and automated journeys", "strength": { "title": "Personalization", "desc": "You use behavioral personalization and automations." } }
+      ]
+    },
+    {
+      "id": "q3",
+      "category": "Website Intent Capture",
+      "question": "3. When someone hits your site (paid or organic) do you capture intent and follow up if they don't book?",
+      "options": [
+        { "value": "none", "points": 0, "title": "Currently have no tracking system", "desc": "May or may not have an email opt-in, but not using it" },
+        { "value": "leak", "points": 0.25, "title": "We mostly lose them", "desc": "We get traffic but have limited tracking/capture and no consistent follow-up" },
+        { "value": "capture", "points": 0.5, "title": "We capture some intent + do manual follow-up", "desc": "Basic tracking + forms; follow-up happens but it's inconsistent" },
+        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing/case study/demo page) trigger email/retargeting follow-up" }
+      ]
+    },
+    {
+      "id": "q4",
+      "category": "Lead Follow-Up System",
+      "question": "4. How do you keep interested leads from slipping through the cracks?",
+      "options": [
+        { "value": "ad-hoc", "points": 0, "title": "Ad-hoc", "desc": "Manual reminders and memory-based follow-up" },
+        { "value": "mapped", "points": 0.5, "title": "Documented but not automated", "desc": "We know the steps but execution is inconsistent" },
+        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-up System", "desc": "You have automated follow-up triggers." } },
+        { "value": "crm", "points": 1, "title": "Rich CRM + behavior-based segmentation", "desc": "We track communications and use behavior-based segmentation" }
+      ]
+    },
+    {
+      "id": "q5",
+      "category": "Retention & LTV",
+      "question": "5. Is your revenue mostly from new or existing clients / customers?",
+      "options": [
+        { "value": "unsure", "points": 0, "title": "Not sure", "desc": "Do not have a system or not actively tracking" },
+        { "value": "acq-heavy", "points": 0.25, "title": "80%+ new 20% or less existing", "desc": "New customers are the main source of revenue" },
+        { "value": "balanced", "points": 0.25, "title": "50/50 split", "desc": "Both generate an equal amount of revenue" },
+        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You prioritize retention and expansion." } }
+      ]
+    },
+    {
+      "id": "q6",
+      "category": "Owned Distribution",
+      "question": "6. Do you have an owned distribution channel (newsletter, community, audience)?",
+      "options": [
+        { "value": "none", "points": 0, "title": "No", "desc": "Rely on paid reach + outbound" },
+        { "value": "basic", "points": 0.5, "title": "Starting one", "desc": "Early newsletter / early audience building" },
+        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a channel that compounds attention." } }
+      ]
+    },
+    {
+      "id": "q7",
+      "category": "Distribution Strategy",
+      "question": "7. How do you distribute content and reach prospects?",
+      "options": [
+        { "value": "isolated", "points": 0, "title": "Isolated tactics", "desc": "Email OR ads OR LinkedIn; focused on individual channel strategies" },
+        { "value": "coordinated", "points": 0.5, "title": "Coordinated across 2–3 channels", "desc": "Some synergy but not fully integrated" },
+        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem", "desc": "You have an integrated channel strategy." } }
+      ]
+    },
+    {
+      "id": "q8",
+      "category": "Trust & Positioning",
+      "question": "8. How do you build credibility with cold/warm prospects?",
+      "options": [
+        { "value": "pitch", "points": 0, "title": "Product-first", "desc": "Lead with services, features, benefits, and / or pricing" },
+        { "value": "proof", "points": 0.5, "title": "Proof-driven", "desc": "Utilize case studies, results, testimonials to demonstrate expertise" },
+        { "value": "trust", "points": 0.5, "title": "Trust-first, brand-focused", "desc": "Lead with insights and brand awareness" },
+        { "value": "customer-first", "points": 1, "title": "Customer-focused", "desc": "Consistent visible thought leadership, case studies, and education" }
+      ]
+    }
   ],
 
   // Action Plan Rules
   actionPlanRules: [
-    /* ... rules ... */
+    {
+      "triggerGaps": ["Email Metrics", "Personalization"],
+      "actions": [
+        { "title": "Shift email KPIs to clicks, conversions and revenue-per-send", "desc": "Keep opens as directional only. Optimize toward revenue impact." },
+        { "title": "Add behavioral segmentation + automated email sequences", "desc": "Build flows for active, at-risk, and dormant segments." }
+      ]
+    },
+    {
+      "triggerGaps": ["Website Intent"],
+      "actions": [
+        { "title": "Capture website intent and follow up with non-bookers", "desc": "Track key events (pricing/demo/case study). Trigger email and retargeting." }
+      ]
+    },
+    {
+      "triggerGaps": ["Lead Follow-Up"],
+      "actions": [
+        { "title": "Build a simple follow-up trigger system", "desc": "Create rules for no-shows, abandoned booking pages and pricing views." }
+      ]
+    },
+    {
+      "triggerGaps": ["LTV"],
+      "actions": [
+        { "title": "Rebalance toward retention and expansion", "desc": "Formalize onboarding, adoption nudges, renewal sequences and expansion offers.", "priority": "high" }
+      ]
+    },
+    {
+      "triggerGaps": ["Distribution", "Owned Distribution", "Ecosystem"],
+      "actions": [
+        { "title": "Start or strengthen an owned channel", "desc": "Newsletter or community that compounds attention over time." }
+      ]
+    }
   ],
 
   // Score Tiers
   scoreTiers: [
-    { minScore: 75, title: "Your strategy's strong. What's your next move?", subtitle: "You're ahead of most. Focus on compounding your advantages.", color: "strong" },
+    { minScore: 75, title: "Your strategy is strong. What's your next move?", subtitle: "You're ahead of most. Focus on compounding your advantages.", color: "strong" },
     { minScore: 50, title: "There's room for improvement", subtitle: "You have a solid foundation. Closing a few gaps could unlock growth.", color: "medium" },
     { minScore: 0, title: "We should talk", subtitle: "There is untapped leverage and strategic shifts that could materially improve your results.", color: "weak" }
   ]
@@ -504,14 +618,10 @@ const CONTENT = {
 // ============================================
 
 ;(async function init(){
-  // Try to load external content.json to make editing easy.
   try {
-    // cache-bust to pick up the latest edits quickly when testing/iterating
     const res = await fetch(`./content.json?v=${Date.now()}`, { cache: 'no-store' });
     if (res.ok) {
       const external = await res.json();
-
-      // deep merge top-level objects (arrays are replaced)
       function deepMerge(target, source) {
         for (const key of Object.keys(source)) {
           const srcVal = source[key];
@@ -520,17 +630,14 @@ const CONTENT = {
             if (!tgtVal || typeof tgtVal !== 'object' || Array.isArray(tgtVal)) target[key] = {};
             deepMerge(target[key], srcVal);
           } else {
-            // arrays and primitives will replace target
             target[key] = srcVal;
           }
         }
         return target;
       }
-
       deepMerge(CONTENT, external);
     }
   } catch (e) {
-    // ignore - fallback to inline CONTENT
     console.warn('No external /content.json loaded, using embedded content');
   }
 
@@ -540,13 +647,11 @@ const CONTENT = {
     document.getElementById('previewButtons').classList.remove('hidden');
   }
 
-  // Use innerHTML for headlines so editors can include simple <strong> markup for emphasis.
   document.getElementById('mainHeadline').innerHTML = CONTENT.headline || '';
   document.getElementById('mainSubheadline').innerHTML = CONTENT.subheadline || '';
   document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle || '';
   document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle || '';
 
-  // Results page headline & subheadline (prefer results-specific overrides, fallback to main)
   const resultsHeadlineEl = document.getElementById('resultsHeadline');
   const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
   const resultsHeadlineText = CONTENT.resultsHeadline || CONTENT.headline || '';
@@ -555,7 +660,6 @@ const CONTENT = {
   if (resultsHeadlineEl) resultsHeadlineEl.innerHTML = resultsHeadlineText;
   if (resultsSubheadlineEl) resultsSubheadlineEl.innerHTML = resultsSubheadlineText;
 
-  // Update booking link
   const bookingSection = document.querySelector('.booking-section');
   if (bookingSection && CONTENT.bookingText) {
     const bookingTextEl = bookingSection.querySelector('.booking-text');
@@ -566,9 +670,7 @@ const CONTENT = {
 
   const formEl = document.getElementById('auditForm');
 
-  // Build questions if provided (full questions array expected in CONTENT)
   if (Array.isArray(CONTENT.questions)) {
-    // clear form (in case of preview reruns)
     formEl.innerHTML = '';
     CONTENT.questions.forEach(q => {
       const section = document.createElement('div');
@@ -576,4 +678,294 @@ const CONTENT = {
       section.innerHTML = `
         <h2>${escapeHtml(q.category)}</h2>
         <p class="question-label">${escapeHtml(q.question)}</p>
-        <div class=...
+        <div class="options">
+          ${q.options.map((opt, i) => `
+            <div class="option">
+              <input type="radio" name="${escapeAttr(q.id)}" id="${escapeAttr(q.id)}${String.fromCharCode(97+i)}" value="${escapeAttr(opt.value)}" />
+              <label for="${escapeAttr(q.id)}${String.fromCharCode(97+i)}">
+                <p class="label-title">${escapeHtml(opt.title)}</p>
+                <p class="label-desc">${escapeHtml(opt.desc)}</p>
+              </label>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      formEl.appendChild(section);
+    });
+  } else {
+    formEl.innerHTML = '<p>No questions found in CONTENT.questions</p>';
+  }
+
+  let currentResult = null;
+  let currentAnswers = null;
+
+  function syncSelectedStates() {
+    document.querySelectorAll('.option').forEach((opt) => {
+      const radio = opt.querySelector('input[type="radio"]');
+      if (!radio) return;
+      opt.classList.toggle('is-selected', radio.checked);
+    });
+  }
+
+  formEl.addEventListener('click', (e) => {
+    const opt = e.target.closest('.option');
+    if (!opt || !formEl.contains(opt)) return;
+    const radio = opt.querySelector('input[type="radio"]');
+    if (radio && !radio.checked) {
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+
+  formEl.addEventListener('change', () => {
+    syncSelectedStates();
+    updateProgress();
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    syncSelectedStates();
+  });
+
+  function updateProgress() {
+    const answers = new FormData(formEl);
+    const total = Array.isArray(CONTENT.questions) ? CONTENT.questions.length : 0;
+    let count = 0;
+    if (Array.isArray(CONTENT.questions)) {
+      CONTENT.questions.forEach(q => {
+        if (answers.get(q.id)) count++;
+      });
+    }
+    const percent = total === 0 ? 0 : (count / total) * 100;
+    document.getElementById('progressFill').style.width = `${percent}%`;
+  }
+
+  formEl.addEventListener('submit', function(e) {
+    e.preventDefault();
+    calculateScore();
+  });
+
+  function calculateScore() {
+    const answers = {};
+    const formData = new FormData(formEl);
+    for (let [key, value] of formData.entries()) {
+      answers[key] = value;
+    }
+    if (Array.isArray(CONTENT.questions) && Object.keys(answers).length < CONTENT.questions.length) {
+      alert(`Please answer all ${CONTENT.questions.length} questions`);
+      return;
+    }
+    const result = scoreAnswers(answers);
+    currentResult = result;
+    currentAnswers = answers;
+    showEmailGate(result.score);
+  }
+
+  function showEmailGate(score) {
+    updatePreviewScoreDisplay(score);
+    document.getElementById('emailGate').classList.remove('hidden');
+    document.getElementById('progressFill').style.width = '100%';
+  }
+
+  document.getElementById('emailForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('userEmail').value;
+    const submitBtn = document.getElementById('submitEmail');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    try {
+      await sendToConvertKit(email, currentAnswers, currentResult);
+      document.getElementById('emailGate').classList.add('hidden');
+      displayResults(currentResult, currentAnswers);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('There was an error. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Get My Results';
+    }
+  });
+
+  async function sendToConvertKit(email, answers, result) {
+    const url = `https://api.convertkit.com/v3/forms/${CONTENT.convertKitFormId}/subscribe`;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: CONTENT.convertKitApiKey,
+          email: email,
+          fields: {
+            score: result.score,
+            gaps: result.gaps.map(g => g.title).join(', '),
+            strengths: result.strengths.map(s => s.title).join(', ')
+          }
+        })
+      });
+      if (!response.ok) {
+        console.warn('ConvertKit API returned non-OK:', response.status, response.statusText);
+        return { status: 'simulated', success: true };
+      }
+      return response.json();
+    } catch (err) {
+      console.warn('ConvertKit fetch failed, falling back to simulated success.', err);
+      return { status: 'simulated', success: true };
+    }
+  }
+
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function escapeAttr(str) {
+    return escapeHtml(str).replace(/"/g, '&quot;');
+  }
+
+  function scoreAnswers(answers) {
+    const gaps = [];
+    const strengths = [];
+    let total = 0;
+    let possible = 0;
+    if (Array.isArray(CONTENT.questions)) {
+      CONTENT.questions.forEach(q => {
+        const chosen = answers[q.id];
+        const opt = (q.options || []).find(o => o.value === chosen);
+        const pts = opt ? (opt.points || 0) : 0;
+        total += pts;
+        possible += 1;
+        if (opt && opt.strength) strengths.push(opt.strength);
+        (q.options || []).forEach(o => {
+          if (o.gapIfNotChosen && (!opt || o.value !== opt.value) && (o.points && o.points > (opt ? opt.points : 0))) {
+            gaps.push(o.gapIfNotChosen);
+          }
+        });
+      });
+    }
+    const score = possible === 0 ? 0 : Math.round((total / possible) * 100);
+    let tier = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
+    return { score, gaps, strengths, tier };
+  }
+
+  function updateScoreDisplay(score, targetElId = 'scoreNumber') {
+    const el = document.getElementById(targetElId);
+    if (!el) return;
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
+    el.classList.add(colorClass);
+  }
+
+  function updatePreviewScoreDisplay(score) {
+    const el = document.getElementById('previewScore');
+    if (!el) return;
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
+    el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
+  }
+
+  function displayResults(result, answers) {
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('auditSection').classList.add('hidden');
+
+    updateScoreDisplay(result.score, 'scoreNumber');
+
+    const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
+    if (tier) {
+      const titleEl = document.getElementById('resultTitle');
+      const subtitleEl = document.getElementById('resultSubtitle');
+      if (titleEl) titleEl.textContent = tier.title || '';
+      if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
+    }
+
+    const contentEl = document.getElementById('resultsContent');
+    contentEl.innerHTML = '';
+
+    if (result.gaps && result.gaps.length) {
+      const gapsWrap = document.createElement('div');
+      gapsWrap.className = 'unified-gap-card';
+      gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
+      result.gaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'gap-section';
+        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        gapsWrap.appendChild(div);
+      });
+      contentEl.appendChild(gapsWrap);
+    }
+
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'actions-section';
+    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
+    const list = document.createElement('div');
+    list.className = 'action-items';
+    (CONTENT.actionPlanRules || []).forEach(rule => {
+      if (!rule.triggerGaps || !rule.actions) return;
+      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
+      if (!triggersMatched) {
+        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
+        if (!fallbackMatch) return;
+      }
+
+      rule.actions.forEach(a => {
+        const ai = document.createElement('div');
+        ai.className = 'action-item';
+        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
+        ai.innerHTML = `
+          <div class="action-content">
+            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
+            <h4>${escapeHtml(a.title || '')}</h4>
+            <p>${escapeHtml(a.desc || '')}</p>
+          </div>
+        `;
+        list.appendChild(ai);
+      });
+    });
+
+    if (list.children.length) {
+      actionsWrap.appendChild(list);
+      contentEl.appendChild(actionsWrap);
+    } else {
+      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
+      contentEl.appendChild(actionsWrap);
+    }
+
+    const bookingLinkEl = document.getElementById('bookingLink');
+    if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
+  }
+
+  window.previewLow = function() {
+    updatePreviewScoreDisplay(32);
+    document.getElementById('previewButtons').classList.remove('hidden');
+  };
+  window.previewMid = function() {
+    updatePreviewScoreDisplay(62);
+    document.getElementById('previewButtons').classList.remove('hidden');
+  };
+  window.previewHigh = function() {
+    updatePreviewScoreDisplay(88);
+    document.getElementById('previewButtons').classList.remove('hidden');
+  };
+  window.backToQuiz = function() {
+    document.getElementById('resultsSection').classList.add('hidden');
+    document.getElementById('auditSection').classList.remove('hidden');
+  };
+
+  window.downloadPDF = function() {
+    alert('Download not implemented in this demo.');
+  };
+
+  window.resetAudit = function() {
+    window.location.reload();
+  };
+
+})();
+  </script>
+</body>
+</html>
