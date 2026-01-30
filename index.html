@@ -1,35 +1,1007 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Preview Example</title>
-    <script>
-        // Functions to build and display full demo results dynamically
-        function previewLow() {
-            const content = "Detailed results for Low";
-            document.getElementById('result').innerText = content;
-            // Additional logic to handle gaps and actions
-        }
-
-        function previewMid() {
-            const content = "Detailed results for Mid";
-            document.getElementById('result').innerText = content;
-            // Additional logic to handle gaps and actions
-        }
-
-        function previewHigh() {
-            const content = "Detailed results for High";
-            document.getElementById('result').innerText = content;
-            // Additional logic to handle gaps and actions
-        }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 Alignment Audit</title>
+  <style>
+    :root {
+      --color-primary: #0f172a;
+      --color-success: #22C55E;
+      --color-warning: #F59E0B;
+      --color-error: #EF4444;
+      --color-bg: #F8FAFC;
+      --color-surface: #FFFFFF;
+      --color-text: #0f172a;
+      --color-muted: #475569;
+      --color-border: rgba(15, 23, 42, 0.10);
+      --radius-card: 18px;
+      --radius-item: 14px;
+      --shadow-card: 0 2px 14px rgba(15, 23, 42, 0.06);
+      --shadow-hover: 0 10px 28px rgba(15, 23, 42, 0.10);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 64px 20px; }
+    .header { text-align: center; margin-bottom: 28px; }
+    .header h1 {
+      font-size: 2.2rem;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      color: var(--color-text);
+    }
+    .header p {
+      font-size: 1.1rem;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 6px;
+      background: rgba(15, 23, 42, 0.08);
+      border-radius: 999px;
+      margin-top: 18px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 0%;
+      background: var(--color-primary);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    .section, .chapter-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+    }
+    .section { padding: 32px; margin-bottom: 24px; }
+    .section h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: var(--color-text);
+    }
+    .question-label {
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option, .result-card, .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      cursor: pointer;
+      padding: 20px 22px;
+      border-radius: var(--radius-item);
+      background: #fff;
+      border: 1px solid var(--color-border);
+      transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .option:hover { box-shadow: var(--shadow-hover); }
+    #resultsSection .result-card, #resultsSection .action-item {
+      cursor: default;
+      transform: none !important;
+    }
+    #resultsSection .result-card:hover, #resultsSection .action-item:hover {
+      box-shadow: none !important;
+    }
+    .option:active { transform: translateY(1px); }
+    .option.is-selected {
+      border-color: rgba(15, 23, 42, 0.22);
+      background: rgba(15, 23, 42, 0.02);
+      box-shadow: var(--shadow-hover);
+    }
+    .option input[type="radio"] {
+      margin-top: 3px;
+      cursor: pointer;
+      accent-color: var(--color-primary);
+      flex-shrink: 0;
+    }
+    .option label { cursor: pointer; flex: 1; }
+    .option label p { margin: 0; }
+    .label-title { font-weight: 800; color: var(--color-text); margin-bottom: 4px; }
+    .label-desc { font-size: 0.95rem; color: var(--color-muted); }
+    .button-group { display: flex; gap: 12px; margin-top: 26px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 12px 22px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.05s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: var(--shadow-card);
+    }
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.03);
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .hidden { display: none !important; }
+    #previewButtons {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+      padding: 12px 0;
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: 20px;
+    }
+    #previewButtons .button-group { margin: 0; }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-content {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 34px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 18px 60px rgba(2, 6, 23, 0.35);
+    }
+    .modal-content h2 {
+      font-size: 1.4rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+      color: var(--color-text);
+    }
+    .modal-content p { color: var(--color-muted); margin-bottom: 18px; }
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--color-text); }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: rgba(15, 23, 42, 0.25);
+      box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+    }
+    .results {
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .result-header { text-align: center; margin-bottom: 24px; }
+    .score-number {
+      font-size: 3.8rem;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      margin: 0 auto 6px;
+      line-height: 1.0;
+    }
+    .score-number.strong { color: var(--color-success); }
+    .score-number.medium { color: var(--color-warning); }
+    .score-number.weak { color: var(--color-error); }
+    .result-title {
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+      color: var(--color-text);
+    }
+    .result-subtitle { font-size: 1rem; color: var(--color-muted); margin-top: 2px; }
+    .preview-score {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      margin: 14px 0 18px;
+      color: var(--color-primary);
+      line-height: 1.0;
+    }
+    .chapter-card { padding: 34px; margin: 24px 0; }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 16px;
+      color: var(--color-text);
+    }
+    #resultsSection .result-card, #resultsSection .action-item {
+      transition: none;
+      display: block;
+    }
+    #resultsSection .result-card:hover, #resultsSection .action-item:hover {
+      box-shadow: none;
+      transform: none;
+    }
+    .result-card {
+      cursor: default;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .result-card h3 {
+      margin-bottom: 6px;
+      font-size: 1.0rem;
+      letter-spacing: -0.01em;
+    }
+    .result-card p { margin: 0; }
+    .trend-stat {
+      margin-top: 10px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      color: var(--color-muted);
+    }
+    .action-items { margin-top: 0; padding-top: 0; border-top: none; }
+    .action-item {
+      cursor: default;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .action-content h4 {
+      font-size: 1.05rem;
+      letter-spacing: -0.015em;
+      margin-bottom: 2px;
+      color: var(--color-text);
+    }
+    .action-content p {
+      margin: 0;
+      color: var(--color-muted);
+    }
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      border: 1px solid rgba(15, 23, 42, 0.14);
+      background: rgba(15, 23, 42, 0.03);
+      color: var(--color-text);
+      width: fit-content;
+    }
+    .priority-high {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.08);
+    }
+    .priority-medium {
+      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.10);
+    }
+    .priority-low {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.08);
+    }
+    .unified-gap-card {
+      background: white;
+      padding: 24px;
+      margin-bottom: 16px;
+      border-radius: var(--radius-item);
+      border: 1px solid var(--color-border);
+    }
+    .gap-section {
+      margin-bottom: 20px;
+    }
+    .actions-section {
+      padding: 16px;
+      margin-top: 16px;
+      background: rgba(15, 23, 42, 0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+    .actions-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--color-text);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .action-bullet {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      line-height: 1.6;
+    }
+    .action-bullet strong {
+      color: var(--color-text);
+    }
+    .booking-section {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 2px solid var(--color-border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+    .booking-text {
+      font-size: 1rem;
+      color: var(--color-muted);
+      margin: 0;
+      white-space: nowrap;
+    }
+    .booking-link {
+      display: inline;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-decoration: none;
+      padding-left: 8px;
+      transition: color 0.15s ease;
+    }
+    .booking-link:hover {
+      background: rgba(15, 23, 42, 0.05);
+      transform: translateY(-1px);
+    }
+    .download-section {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .download-section + div {
+      margin-top: 24px;
+    }
+    .chapter-card {
+      margin-bottom: 24px;
+      margin-top: 0;
+    }
+    .btn:hover:not(:disabled) {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-1px);
+    }
+    .btn:hover:not(:disabled).btn-primary {
+      background: #1e293b;
+    }
+    .retake-section {
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 28px 16px; }
+      .section { padding: 22px; }
+      .results { padding: 22px; }
+      .chapter-card { padding: 22px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Dynamic Preview Example</h1>
-    <button onclick="previewLow()">Preview Low</button>
-    <button onclick="previewMid()">Preview Mid</button>
-    <button onclick="previewHigh()">Preview High</button>
-    <div id="result"></div>
+  <div id="previewButtons" class="hidden">
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="previewLow()">Low Score Preview</button>
+      <button class="btn btn-secondary" onclick="previewMid()">Mid Score Preview</button>
+      <button class="btn btn-secondary" onclick="previewHigh()">High Score Preview</button>
+      <a class="btn btn-secondary" href="/heymdk-2026/editor.html" target="_blank" rel="noopener">Open Editor</a>
+      <button class="btn btn-primary" onclick="backToQuiz()">Back to Quiz</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="auditSection">
+      <div class="header">
+        <h1 id="mainHeadline">How Does Your Strategy Stack Up?</h1>
+        <p id="mainSubheadline">You versus what's working in 2026</p>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <form id="auditForm"></form>
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary" onclick="document.getElementById('auditForm').dispatchEvent(new Event('submit'))">Get My Results</button>
+      </div>
+    </div>
+
+    <div id="emailGate" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h2 id="emailGateTitle">Get Your Alignment Score</h2>
+        <p id="emailGateSubtitle">Enter your email to receive your personalized breakdown</p>
+        <div class="preview-score" id="previewScore">0%</div>
+        <form id="emailForm">
+          <div class="form-group">
+            <label for="userEmail">Email</label>
+            <input type="email" id="userEmail" name="email" required placeholder="you@company.com" />
+          </div>
+          <button type="submit" class="btn btn-primary" id="submitEmail">Get My Results</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="resultsSection" class="hidden">
+      <div class="results">
+        <div class="header">
+          <h1 id="resultsHeadline">How Does Your Strategy Stack Up?</h1>
+          <p id="resultsSubheadline">You versus what's working in 2026</p>
+        </div>
+        <div class="result-header">
+          <div class="score-number" id="scoreNumber">0%</div>
+          <h2 class="result-title" id="resultTitle">Your Score</h2>
+          <p class="result-subtitle" id="resultSubtitle">Results</p>
+        </div>
+        <div id="resultsContent"></div>
+        <div class="download-section">
+          <button class="btn btn-primary" onclick="downloadPDF()">Download Results</button>
+        </div>
+        <div class="booking-section">
+          <p class="booking-text">Want help closing these gaps? <a class="booking-link" target="_blank" id="bookingLink">→ Book a Strategy Call</a></p>
+        </div>
+        <div class="retake-section">
+          <button class="btn btn-secondary" onclick="resetAudit()">Retake Assessment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// ============================================
+// 📝 EDIT ALL CONTENT HERE - NOTHING ELSE!
+// ============================================
+
+const CONTENT = {
+  // Main Headlines (these can include simple HTML — e.g. use <strong> to bold)
+  headline: "How Does Your Strategy Stack Up Against 2026 Market Trends?",
+  subheadline: "Take this 5-minute assessment to see what you might want to prioritize first.",
+
+  // OPTIONAL: Results-specific overrides (if present they will be used on the results page)
+  // Use HTML here as well (the code uses innerHTML).
+  resultsHeadline: "How Does Your Strategy Stack Up?",
+  resultsSubheadline: "You versus what's working in 2026",
+
+  // Email Gate
+  emailGateTitle: "Get Your Personalized Breakdown",
+  emailGateSubtitle: "Enter your email to receive your personalized breakdown",
+
+  // ConvertKit Integration (note: exposing API keys client-side is insecure — consider server-side)
+  convertKitFormId: '8975679',
+  convertKitApiKey: 'kit_6d1448764627b0fa1dfa960f512981c4',
+
+  // Booking Link (shown at bottom of results)
+  bookingText: "Want help closing these gaps?",
+  bookingLinkText: "→ Book a Strategy Call",
+  bookingLinkUrl: "https://calendly.com/your-link",
+
+  // Questions (embedded from content.json)
+  questions: [
+    {
+      "id": "q1",
+      "category": "Email Strategy",
+      "question": "1. How do you currently measure email performance?",
+      "options": [
+        { "value": "none", "points": 0, "title": "Currently not measuring", "desc": "Not tracking performance metrics, triggers, or events" },
+        { "value": "opens", "points": 0.25, "title": "Open rates (primary metric)", "desc": "This is our main KPI" },
+        { "value": "clicks", "points": 0.25, "title": "Clicks & conversions", "desc": "Shifted away from opens as primary" },
+        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You measure revenue impact per send." } }
+      ]
+    },
+    {
+      "id": "q2",
+      "category": "Email Personalization",
+      "question": "2. How personalized are your emails?",
+      "options": [
+        { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
+        { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role, company size, or past purchase" },
+        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency, engagement depth, LTV, dynamic content and automated journeys", "strength": { "title": "Personalization", "desc": "You use behavioral personalization and automations." } }
+      ]
+    },
+    {
+      "id": "q3",
+      "category": "Website Intent Capture",
+      "question": "3. When someone hits your site (paid or organic) do you capture intent and follow up if they don't book?",
+      "options": [
+        { "value": "none", "points": 0, "title": "Currently have no tracking system", "desc": "May or may not have an email opt-in, but not using it" },
+        { "value": "leak", "points": 0.25, "title": "We mostly lose them", "desc": "We get traffic but have limited tracking/capture and no consistent follow-up" },
+        { "value": "capture", "points": 0.5, "title": "We capture some intent + do manual follow-up", "desc": "Basic tracking + forms; follow-up happens but it's inconsistent" },
+        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing/case study/demo page) trigger email/retargeting follow-up" }
+      ]
+    },
+    {
+      "id": "q4",
+      "category": "Lead Follow-Up System",
+      "question": "4. How do you keep interested leads from slipping through the cracks?",
+      "options": [
+        { "value": "ad-hoc", "points": 0, "title": "Ad-hoc", "desc": "Manual reminders and memory-based follow-up" },
+        { "value": "mapped", "points": 0.5, "title": "Documented but not automated", "desc": "We know the steps but execution is inconsistent" },
+        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-up System", "desc": "You have automated follow-up triggers." } },
+        { "value": "crm", "points": 1, "title": "Rich CRM + behavior-based segmentation", "desc": "We track communications and use behavior-based segmentation" }
+      ]
+    },
+    {
+      "id": "q5",
+      "category": "Retention & LTV",
+      "question": "5. Is your revenue mostly from new or existing clients / customers?",
+      "options": [
+        { "value": "unsure", "points": 0, "title": "Not sure", "desc": "Do not have a system or not actively tracking" },
+        { "value": "acq-heavy", "points": 0.25, "title": "80%+ new 20% or less existing", "desc": "New customers are the main source of revenue" },
+        { "value": "balanced", "points": 0.25, "title": "50/50 split", "desc": "Both generate an equal amount of revenue" },
+        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You prioritize retention and expansion." } }
+      ]
+    },
+    {
+      "id": "q6",
+      "category": "Owned Distribution",
+      "question": "6. Do you have an owned distribution channel (newsletter, community, audience)?",
+      "options": [
+        { "value": "none", "points": 0, "title": "No", "desc": "Rely on paid reach + outbound" },
+        { "value": "basic", "points": 0.5, "title": "Starting one", "desc": "Early newsletter / early audience building" },
+        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a channel that compounds attention." } }
+      ]
+    },
+    {
+      "id": "q7",
+      "category": "Distribution Strategy",
+      "question": "7. How do you distribute content and reach prospects?",
+      "options": [
+        { "value": "isolated", "points": 0, "title": "Isolated tactics", "desc": "Email OR ads OR LinkedIn; focused on individual channel strategies" },
+        { "value": "coordinated", "points": 0.5, "title": "Coordinated across 2–3 channels", "desc": "Some synergy but not fully integrated" },
+        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem", "desc": "You have an integrated channel strategy." } }
+      ]
+    },
+    {
+      "id": "q8",
+      "category": "Trust & Positioning",
+      "question": "8. How do you build credibility with cold/warm prospects?",
+      "options": [
+        { "value": "pitch", "points": 0, "title": "Product-first", "desc": "Lead with services, features, benefits, and / or pricing" },
+        { "value": "proof", "points": 0.5, "title": "Proof-driven", "desc": "Utilize case studies, results, testimonials to demonstrate expertise" },
+        { "value": "trust", "points": 0.5, "title": "Trust-first, brand-focused", "desc": "Lead with insights and brand awareness" },
+        { "value": "customer-first", "points": 1, "title": "Customer-focused", "desc": "Consistent visible thought leadership, case studies, and education" }
+      ]
+    }
+  ],
+
+  // Action Plan Rules
+  actionPlanRules: [
+    {
+      "triggerGaps": ["Email Metrics", "Personalization"],
+      "actions": [
+        { "title": "Shift email KPIs to clicks, conversions and revenue-per-send", "desc": "Keep opens as directional only. Optimize toward revenue impact." },
+        { "title": "Add behavioral segmentation + automated email sequences", "desc": "Build flows for active, at-risk, and dormant segments." }
+      ]
+    },
+    {
+      "triggerGaps": ["Website Intent"],
+      "actions": [
+        { "title": "Capture website intent and follow up with non-bookers", "desc": "Track key events (pricing/demo/case study). Trigger email and retargeting." }
+      ]
+    },
+    {
+      "triggerGaps": ["Lead Follow-Up"],
+      "actions": [
+        { "title": "Build a simple follow-up trigger system", "desc": "Create rules for no-shows, abandoned booking pages and pricing views." }
+      ]
+    },
+    {
+      "triggerGaps": ["LTV"],
+      "actions": [
+        { "title": "Rebalance toward retention and expansion", "desc": "Formalize onboarding, adoption nudges, renewal sequences and expansion offers.", "priority": "high" }
+      ]
+    },
+    {
+      "triggerGaps": ["Distribution", "Owned Distribution", "Ecosystem"],
+      "actions": [
+        { "title": "Start or strengthen an owned channel", "desc": "Newsletter or community that compounds attention over time." }
+      ]
+    }
+  ],
+
+  // Score Tiers
+  scoreTiers: [
+    { minScore: 75, title: "Your strategy is strong. What's your next move?", subtitle: "You're ahead of most. Focus on compounding your advantages.", color: "strong" },
+    { minScore: 50, title: "There's room for improvement", subtitle: "You have a solid foundation. Closing a few gaps could unlock growth.", color: "medium" },
+    { minScore: 0, title: "We should talk", subtitle: "There is untapped leverage and strategic shifts that could materially improve your results.", color: "weak" }
+  ]
+};
+
+// ============================================
+// 🚫 DON'T EDIT BELOW - AUTO-GENERATED CODE
+// ============================================
+
+;(async function init(){
+  try {
+    const res = await fetch(`./content.json?v=${Date.now()}`, { cache: 'no-store' });
+    if (res.ok) {
+      const external = await res.json();
+      function deepMerge(target, source) {
+        for (const key of Object.keys(source)) {
+          const srcVal = source[key];
+          const tgtVal = target[key];
+          if (srcVal && typeof srcVal === 'object' && !Array.isArray(srcVal) && srcVal !== null) {
+            if (!tgtVal || typeof tgtVal !== 'object' || Array.isArray(tgtVal)) target[key] = {};
+            deepMerge(target[key], srcVal);
+          } else {
+            target[key] = srcVal;
+          }
+        }
+        return target;
+      }
+      deepMerge(CONTENT, external);
+    }
+  } catch (e) {
+    console.warn('No external /content.json loaded, using embedded content');
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPreviewMode = urlParams.get('preview') === 'true';
+  if (isPreviewMode) {
+    document.getElementById('previewButtons').classList.remove('hidden');
+  }
+
+  document.getElementById('mainHeadline').innerHTML = CONTENT.headline || '';
+  document.getElementById('mainSubheadline').innerHTML = CONTENT.subheadline || '';
+  document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle || '';
+  document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle || '';
+
+  const resultsHeadlineEl = document.getElementById('resultsHeadline');
+  const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
+  const resultsHeadlineText = CONTENT.resultsHeadline || CONTENT.headline || '';
+  const resultsSubheadlineText = CONTENT.resultsSubheadline || CONTENT.subheadline || '';
+
+  if (resultsHeadlineEl) resultsHeadlineEl.innerHTML = resultsHeadlineText;
+  if (resultsSubheadlineEl) resultsSubheadlineEl.innerHTML = resultsSubheadlineText;
+
+  const bookingSection = document.querySelector('.booking-section');
+  if (bookingSection && CONTENT.bookingText) {
+    const bookingTextEl = bookingSection.querySelector('.booking-text');
+    if (bookingTextEl) {
+      bookingTextEl.innerHTML = `${CONTENT.bookingText} <a class="booking-link" id="bookingLink" href="${CONTENT.bookingLinkUrl}" target="_blank">${CONTENT.bookingLinkText}</a>`;
+    }
+  }
+
+  const formEl = document.getElementById('auditForm');
+
+  if (Array.isArray(CONTENT.questions)) {
+    formEl.innerHTML = '';
+    CONTENT.questions.forEach(q => {
+      const section = document.createElement('div');
+      section.className = 'section';
+      section.innerHTML = `
+        <h2>${escapeHtml(q.category)}</h2>
+        <p class="question-label">${escapeHtml(q.question)}</p>
+        <div class="options">
+          ${q.options.map((opt, i) => `
+            <div class="option">
+              <input type="radio" name="${escapeAttr(q.id)}" id="${escapeAttr(q.id)}${String.fromCharCode(97+i)}" value="${escapeAttr(opt.value)}" />
+              <label for="${escapeAttr(q.id)}${String.fromCharCode(97+i)}">
+                <p class="label-title">${escapeHtml(opt.title)}</p>
+                <p class="label-desc">${escapeHtml(opt.desc)}</p>
+              </label>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      formEl.appendChild(section);
+    });
+  } else {
+    formEl.innerHTML = '<p>No questions found in CONTENT.questions</p>';
+  }
+
+  let currentResult = null;
+  let currentAnswers = null;
+
+  function syncSelectedStates() {
+    document.querySelectorAll('.option').forEach((opt) => {
+      const radio = opt.querySelector('input[type="radio"]');
+      if (!radio) return;
+      opt.classList.toggle('is-selected', radio.checked);
+    });
+  }
+
+  formEl.addEventListener('click', (e) => {
+    const opt = e.target.closest('.option');
+    if (!opt || !formEl.contains(opt)) return;
+    const radio = opt.querySelector('input[type="radio"]');
+    if (radio && !radio.checked) {
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+
+  formEl.addEventListener('change', () => {
+    syncSelectedStates();
+    updateProgress();
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    syncSelectedStates();
+  });
+
+  function updateProgress() {
+    const answers = new FormData(formEl);
+    const total = Array.isArray(CONTENT.questions) ? CONTENT.questions.length : 0;
+    let count = 0;
+    if (Array.isArray(CONTENT.questions)) {
+      CONTENT.questions.forEach(q => {
+        if (answers.get(q.id)) count++;
+      });
+    }
+    const percent = total === 0 ? 0 : (count / total) * 100;
+    document.getElementById('progressFill').style.width = `${percent}%`;
+  }
+
+  formEl.addEventListener('submit', function(e) {
+    e.preventDefault();
+    calculateScore();
+  });
+
+  function calculateScore() {
+    const answers = {};
+    const formData = new FormData(formEl);
+    for (let [key, value] of formData.entries()) {
+      answers[key] = value;
+    }
+    if (Array.isArray(CONTENT.questions) && Object.keys(answers).length < CONTENT.questions.length) {
+      alert(`Please answer all ${CONTENT.questions.length} questions`);
+      return;
+    }
+    const result = scoreAnswers(answers);
+    currentResult = result;
+    currentAnswers = answers;
+    showEmailGate(result.score);
+  }
+
+  function showEmailGate(score) {
+    updatePreviewScoreDisplay(score);
+    document.getElementById('emailGate').classList.remove('hidden');
+    document.getElementById('progressFill').style.width = '100%';
+  }
+
+  document.getElementById('emailForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('userEmail').value;
+    const submitBtn = document.getElementById('submitEmail');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    try {
+      await sendToConvertKit(email, currentAnswers, currentResult);
+      document.getElementById('emailGate').classList.add('hidden');
+      displayResults(currentResult, currentAnswers);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('There was an error. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Get My Results';
+    }
+  });
+
+  async function sendToConvertKit(email, answers, result) {
+    const url = `https://api.convertkit.com/v3/forms/${CONTENT.convertKitFormId}/subscribe`;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: CONTENT.convertKitApiKey,
+          email: email,
+          fields: {
+            score: result.score,
+            gaps: result.gaps.map(g => g.title).join(', '),
+            strengths: result.strengths.map(s => s.title).join(', ')
+          }
+        })
+      });
+      if (!response.ok) {
+        console.warn('ConvertKit API returned non-OK:', response.status, response.statusText);
+        return { status: 'simulated', success: true };
+      }
+      return response.json();
+    } catch (err) {
+      console.warn('ConvertKit fetch failed, falling back to simulated success.', err);
+      return { status: 'simulated', success: true };
+    }
+  }
+
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function escapeAttr(str) {
+    return escapeHtml(str).replace(/"/g, '&quot;');
+  }
+
+  function scoreAnswers(answers) {
+    const gaps = [];
+    const strengths = [];
+    let total = 0;
+    let possible = 0;
+    if (Array.isArray(CONTENT.questions)) {
+      CONTENT.questions.forEach(q => {
+        const chosen = answers[q.id];
+        const opt = (q.options || []).find(o => o.value === chosen);
+        const pts = opt ? (opt.points || 0) : 0;
+        total += pts;
+        possible += 1;
+        if (opt && opt.strength) strengths.push(opt.strength);
+        (q.options || []).forEach(o => {
+          if (o.gapIfNotChosen && (!opt || o.value !== opt.value) && (o.points && o.points > (opt ? opt.points : 0))) {
+            gaps.push(o.gapIfNotChosen);
+          }
+        });
+      });
+    }
+    const score = possible === 0 ? 0 : Math.round((total / possible) * 100);
+    let tier = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
+    return { score, gaps, strengths, tier };
+  }
+
+  function updateScoreDisplay(score, targetElId = 'scoreNumber') {
+    const el = document.getElementById(targetElId);
+    if (!el) return;
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
+    el.classList.add(colorClass);
+  }
+
+  function updatePreviewScoreDisplay(score) {
+    const el = document.getElementById('previewScore');
+    if (!el) return;
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
+    el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
+  }
+
+  function displayResults(result, answers) {
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('auditSection').classList.add('hidden');
+
+    updateScoreDisplay(result.score, 'scoreNumber');
+
+    const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
+    if (tier) {
+      const titleEl = document.getElementById('resultTitle');
+      const subtitleEl = document.getElementById('resultSubtitle');
+      if (titleEl) titleEl.textContent = tier.title || '';
+      if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
+    }
+
+    const contentEl = document.getElementById('resultsContent');
+    contentEl.innerHTML = '';
+
+    if (result.gaps && result.gaps.length) {
+      const gapsWrap = document.createElement('div');
+      gapsWrap.className = 'unified-gap-card';
+      gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
+      result.gaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'gap-section';
+        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        gapsWrap.appendChild(div);
+      });
+      contentEl.appendChild(gapsWrap);
+    }
+
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'actions-section';
+    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
+    const list = document.createElement('div');
+    list.className = 'action-items';
+    (CONTENT.actionPlanRules || []).forEach(rule => {
+      if (!rule.triggerGaps || !rule.actions) return;
+      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
+      if (!triggersMatched) {
+        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
+        if (!fallbackMatch) return;
+      }
+
+      rule.actions.forEach(a => {
+        const ai = document.createElement('div');
+        ai.className = 'action-item';
+        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
+        ai.innerHTML = `
+          <div class="action-content">
+            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
+            <h4>${escapeHtml(a.title || '')}</h4>
+            <p>${escapeHtml(a.desc || '')}</p>
+          </div>
+        `;
+        list.appendChild(ai);
+      });
+    });
+
+    if (list.children.length) {
+      actionsWrap.appendChild(list);
+      contentEl.appendChild(actionsWrap);
+    } else {
+      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
+      contentEl.appendChild(actionsWrap);
+    }
+
+    const bookingLinkEl = document.getElementById('bookingLink');
+    if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
+  }
+
+  // Replace existing preview helpers with full-result previews that use CONTENT.
+  function buildDemoResult(score) {
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
+
+    // Collect trigger keywords from actionPlanRules so recommended actions render dynamically
+    const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
+    // Choose triggers depending on score to ensure actions appear
+    let pickedTriggers = [];
+    if (score < 50) pickedTriggers = allTriggers.slice(0, 2);   // low: multiple gaps
+    else if (score < 75) pickedTriggers = allTriggers.slice(0, 1); // mid: one focused gap
+    else pickedTriggers = []; // high: no gaps
+
+    const gaps = pickedTriggers.map(t => ({ title: t, desc: `Demo gap: ${t} — consider improving this area.` }));
+
+    // Pull up to two strengths from question options that define a `strength` field
+    const strengths = [];
+    (CONTENT.questions || []).forEach(q => {
+      (q.options || []).forEach(o => {
+        if (o.strength && strengths.length < 2) strengths.push(o.strength);
+      });
+    });
+
+    return { score, gaps, strengths, tier };
+  }
+
+  function showDemoResult(score) {
+    // Hide email gate if visible
+    const eg = document.getElementById('emailGate'); if (eg) eg.classList.add('hidden');
+    // Make progress bar full
+    const pf = document.getElementById('progressFill'); if (pf) pf.style.width = '100%';
+
+    const demo = buildDemoResult(score);
+
+    // Use existing renderer so UI, actions and tiers come from CONTENT
+    if (typeof displayResults === 'function') {
+      displayResults(demo, {});
+      updateScoreDisplay(demo.score, 'scoreNumber');
+    } else {
+      // Fallback: update preview score in email gate
+      updatePreviewScoreDisplay(score);
+      document.getElementById('emailGate').classList.remove('hidden');
+    }
+  }
+
+  window.previewLow  = function() { showDemoResult(32); };
+  window.previewMid  = function() { showDemoResult(62); };
+  window.previewHigh = function() { showDemoResult(88); };
+  window.backToQuiz = function() {
+    document.getElementById('resultsSection').classList.add('hidden');
+    document.getElementById('auditSection').classList.remove('hidden');
+  };
+
+  window.downloadPDF = function() {
+    alert('Download not implemented in this demo.');
+  };
+
+  window.resetAudit = function() {
+    window.location.reload();
+  };
+
+})();
+  </script>
 </body>
 </html>
