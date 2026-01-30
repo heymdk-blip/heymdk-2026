@@ -1,6 +1,6 @@
 {
-  "headline": "How Does Your Strategy Stack Up Against 2026 Market Reality?",
-  "subheadline": "Take this 8-question audit to see where you stand and what to fix first.",
+  "headline": "How Does Your Strategy Stack Up Against 2026 Market Trends?",
+  "subheadline": "Take this 5-minute assessment to see what to prioritize first.",
   "emailGateTitle": "Get Your Personalized Results",
   "emailGateSubtitle": "Enter your email to see your score and action plan",
   "convertKitFormId": "8975679",
@@ -23,7 +23,7 @@
     {
       "id": "q2",
       "category": "Email Personalization",
-      "question": "2. How personalized is your email program?",
+      "question": "2. How personalized are your emails?",
       "options": [
         { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
         { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role company size or past purchase" },
@@ -104,8 +104,8 @@
     { "triggerGaps": ["Distribution", "Owned Distribution", "Ecosystem"], "actions": [ { "title": "Start or strengthen an owned channel", "desc": "Newsletter or community that compounds attention and reduces paid dependency.", "priority": "low" } ] }
   ],
   "scoreTiers": [
-    { "minScore": 75, "title": "Your strategy is strong", "subtitle": "You're ahead of most. Focus on compounding your advantages.", "color": "strong" },
-    { "minScore": 50, "title": "Moderate Alignment", "subtitle": "You have a solid foundation. Closing a few gaps could unlock growth.", "color": "medium" },
-    { "minScore": 0, "title": "You're missing out", "subtitle": "There is untapped leverage and strategic shifts that could materially improve your results.", "color": "weak" }
+    { "minScore": 75, "title": "Your strategy is strong. What's your next move?", "subtitle": "You're ahead of most. Focus on compounding your advantages.", "color": "strong" },
+    { "minScore": 50, "title": "There's room for improvement", "subtitle": "You have a solid foundation. Closing a few gaps could unlock growth.", "color": "medium" },
+    { "minScore": 0, "title": "We should talk", "subtitle": "There is untapped leverage and strategic shifts that could materially improve your results.", "color": "weak" }
   ]
 }
