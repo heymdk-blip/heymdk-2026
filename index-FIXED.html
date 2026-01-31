@@ -830,7 +830,7 @@ const CONTENT = {
 ;(async function init(){
   // Try to load external content.json to make editing easy.
   try {
-    const res = await fetch('content.json');
+    const res = await fetch('content.json?v=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
       const external = await res.json();
       // shallow merge: top-level keys will override
@@ -1043,193 +1043,168 @@ const CONTENT = {
   }
 
   function displayResults(result, answers) {
-    const auditSection = document.getElementById('auditSection');
-    const resultsSection = document.getElementById('resultsSection');
-    const scoreNumber = document.getElementById('scoreNumber');
-    const resultTitle = document.getElementById('resultTitle');
-    const resultSubtitle = document.getElementById('resultSubtitle');
-    const resultsContent = document.getElementById('resultsContent');
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('auditSection').classList.add('hidden');
 
-    const strengths = Array.isArray(result.strengths) ? result.strengths.filter(Boolean) : [];
-    const gaps = Array.isArray(result.gaps) ? result.gaps.filter(Boolean) : [];
-    const score = Number.isFinite(result.score) ? result.score : 0;
+    updateScoreDisplay(result.score, 'scoreNumber');
 
-    resultsContent.innerHTML = '';
-    auditSection.classList.add('hidden');
-    resultsSection.classList.remove('hidden');
-
-    scoreNumber.textContent = `${score}%`;
-    scoreNumber.className = 'score-number';
-
-    const tier = CONTENT.scoreTiers.find(t => score >= t.minScore);
+    const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
     if (tier) {
-      scoreNumber.classList.add(tier.color);
-      resultTitle.textContent = tier.title;
-      resultSubtitle.textContent = tier.subtitle;
+      const titleEl = document.getElementById('resultTitle');
+      const subtitleEl = document.getElementById('resultSubtitle');
+      if (titleEl) titleEl.textContent = tier.title || '';
+      if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
     }
 
-    // Show gaps FIRST (more important - what needs work)
-    if (gaps.length > 0) {
-      const wrap = document.createElement('div');
-      wrap.className = 'chapter-card';
-      wrap.innerHTML = `<h3 class="section-title">Priority Gaps & Next Steps</h3>`;
-      
-      // Generate all actions
-      const allActions = generateActionPlan(gaps);
-      
-      // Calculate priority for each gap and sort: High → Medium → Low
-      const gapsWithPriority = gaps.map((gap) => {
-        // Find actions triggered by this gap
-        const relatedActions = allActions.filter(action => {
-          return CONTENT.actionPlanRules.some(rule => {
-            const triggersThisGap = rule.triggerGaps.some(keyword => 
-              (gap.title || '').includes(keyword)
-            );
-            const hasThisAction = rule.actions.some(a => a.title === action.title);
-            return triggersThisGap && hasThisAction;
-          });
-        });
+    const contentEl = document.getElementById('resultsContent');
+    contentEl.innerHTML = '';
 
-        // Get highest priority from related actions
-        const highestPriority = relatedActions.length > 0 
-          ? relatedActions.reduce((highest, a) => {
-              const priorityOrder = { high: 3, medium: 2, low: 1 };
-              return (priorityOrder[a.priority] || 0) > (priorityOrder[highest.priority] || 0) ? a : highest;
-            }).priority
-          : 'medium';
-
-        return { gap, priority: highestPriority, relatedActions };
+    if (result.gaps && result.gaps.length) {
+      const gapsWrap = document.createElement('div');
+      gapsWrap.className = 'unified-gap-card';
+      gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
+      result.gaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'gap-section';
+        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        if (g.trend) {
+          div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
+        }
+        gapsWrap.appendChild(div);
       });
-
-      // Sort by priority: high (3) → medium (2) → low (1)
-      const priorityOrder = { high: 3, medium: 2, low: 1 };
-      gapsWithPriority.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
-      
-      // Display sorted gaps
-      gapsWithPriority.forEach(({ gap, priority, relatedActions }) => {
-        const priorityClass = priority === 'high' ? 'priority-high' : 
-                              priority === 'medium' ? 'priority-medium' : 'priority-low';
-        const priorityLabel = priority === 'high' ? 'High Priority' : 
-                              priority === 'medium' ? 'Medium Priority' : 'Low Priority';
-
-        const card = document.createElement('div');
-        card.className = 'unified-gap-card';
-        card.innerHTML = `
-          <div class="priority-badge ${priorityClass}">${priorityLabel}</div>
-          <div class="gap-section">
-            <div class="label-title">${escapeHtml(gap.title)}</div>
-            <div class="label-desc">${escapeHtml(gap.desc)}</div>
-            <div class="trend-stat">2026 Reality: ${escapeHtml(gap.trend)}</div>
-          </div>
-          ${relatedActions.length > 0 ? `
-            <div class="actions-section">
-              <div class="actions-label">Quick Actions</div>
-              ${relatedActions.map(action => `
-                <div class="action-bullet">
-                  <strong>${escapeHtml(action.title)}</strong> — ${escapeHtml(action.desc)}
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-        `;
-        wrap.appendChild(card);
-      });
-      
-      resultsContent.appendChild(wrap);
+      contentEl.appendChild(gapsWrap);
     }
 
-    // Show strengths SECOND (after gaps)
-    if (strengths.length > 0) {
-      const wrap = document.createElement('div');
-      wrap.className = 'chapter-card';
-      wrap.innerHTML = `<h3 class="section-title">Here's Where You're Aligned</h3>`;
-      strengths.forEach((s) => {
-        const card = document.createElement('div');
-        card.className = 'result-card';
-        card.innerHTML = `<div style="flex:1"><div class="label-title">${escapeHtml(s.title)}</div><div class="label-desc">${escapeHtml(s.desc)}</div></div>`;
-        wrap.appendChild(card);
-      });
-      resultsContent.appendChild(wrap);
-    }
-    window.scrollTo(0, 0);
-  }
-
-  function generateActionPlan(gaps) {
-    const actions = [];
-    CONTENT.actionPlanRules.forEach(rule => {
-      const hasGap = rule.triggerGaps.some(needle => 
-        gaps.some(g => (g.title || '').includes(needle))
-      );
-      if (hasGap) {
-        actions.push(...rule.actions);
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'actions-section';
+    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
+    const list = document.createElement('div');
+    list.className = 'action-items';
+    (CONTENT.actionPlanRules || []).forEach(rule => {
+      if (!rule.triggerGaps || !rule.actions) return;
+      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
+      if (!triggersMatched) {
+        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
+        if (!fallbackMatch) return;
       }
+
+      rule.actions.forEach(a => {
+        const ai = document.createElement('div');
+        ai.className = 'action-item';
+        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
+        ai.innerHTML = `
+          <div class="action-content">
+            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
+            <h4>${escapeHtml(a.title || '')}</h4>
+            <p>${escapeHtml(a.desc || '')}</p>
+          </div>
+        `;
+        list.appendChild(ai);
+      });
     });
-    return actions.slice(0, 5);
+
+    if (list.children.length) {
+      actionsWrap.appendChild(list);
+      contentEl.appendChild(actionsWrap);
+    } else {
+      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
+      contentEl.appendChild(actionsWrap);
+    }
+
+    const bookingLinkEl = document.getElementById('bookingLink');
+    if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
   }
 
-  function generateWorstCaseAnswers() {
-    const answers = {};
-    CONTENT.questions.forEach(q => {
-      const worstOption = q.options.reduce((worst, opt) => 
-        opt.points < worst.points ? opt : worst
-      );
-      answers[q.id] = worstOption.value;
+  // Improved buildDemoResult: prefer real gap objects (gapIfNotChosen) from CONTENT.questions
+  function buildDemoResult(score) {
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
+
+    const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
+    let pickedTriggers = [];
+    if (score < 50) pickedTriggers = allTriggers.slice(0, 2);
+    else if (score < 75) pickedTriggers = allTriggers.slice(0, 1);
+    else pickedTriggers = [];
+
+    // Try to resolve each trigger to a gap object defined in questions (gapIfNotChosen)
+    const gaps = pickedTriggers.map(trigger => {
+      // search questions/options for a gapIfNotChosen that mentions the trigger
+      for (const q of (CONTENT.questions || [])) {
+        for (const o of (q.options || [])) {
+          const gap = o.gapIfNotChosen;
+          if (!gap) continue;
+          // match trigger to gap title or desc (case-insensitive)
+          const title = (gap.title || '').toLowerCase();
+          const desc = (gap.desc || '').toLowerCase();
+          if ((title && title.includes(trigger.toLowerCase())) || (desc && desc.includes(trigger.toLowerCase()))) {
+            return gap;
+          }
+        }
+      }
+      // fallback: try to find a gap object in actionPlanRules (if present)
+      for (const rule of (CONTENT.actionPlanRules || [])) {
+        if ((rule.triggerGaps || []).some(t => t.toLowerCase().includes(trigger.toLowerCase()))) {
+          return { title: trigger, desc: `We detected a gap related to ${trigger}. Consider improving this area.` };
+        }
+      }
+      // final fallback: minimal demo gap
+      return { title: trigger, desc: `Demo gap: ${trigger} — consider improving this area.` };
     });
-    return answers;
-  }
 
-  function generateMidCaseAnswers() {
-    const answers = {};
-    CONTENT.questions.forEach(q => {
-      const midOption = q.options.find(opt => opt.points === 0.5) || q.options[1] || q.options[0];
-      answers[q.id] = midOption.value;
+    // Pull up to two strengths from question options that define a `strength` field
+    const strengths = [];
+    (CONTENT.questions || []).forEach(q => {
+      (q.options || []).forEach(o => {
+        if (o.strength && strengths.length < 2) strengths.push(o.strength);
+      });
     });
-    return answers;
+
+    return { score, gaps, strengths, tier };
   }
 
-  function generateBestCaseAnswers() {
-    const answers = {};
-    CONTENT.questions.forEach(q => {
-      const bestOption = q.options.reduce((best, opt) => 
-        opt.points > best.points ? opt : best
-      );
-      answers[q.id] = bestOption.value;
-    });
-    return answers;
+  function showDemoResult(score) {
+    const eg = document.getElementById('emailGate'); if (eg) eg.classList.add('hidden');
+    const pf = document.getElementById('progressFill'); if (pf) pf.style.width = '100%';
+
+    const demo = buildDemoResult(score);
+
+    if (typeof displayResults === 'function') {
+      displayResults(demo, {});
+      updateScoreDisplay(demo.score, 'scoreNumber');
+    } else {
+      updatePreviewScoreDisplay(score);
+      document.getElementById('emailGate').classList.remove('hidden');
+    }
   }
 
-  function previewLow() {
-    const worstAnswers = generateWorstCaseAnswers();
-    const result = scoreAnswers(worstAnswers);
-    displayResults(result, worstAnswers);
-    hideAllSectionsExceptResults();
+  window.previewLow  = function() { showDemoResult(32); };
+  window.previewMid  = function() { showDemoResult(62); };
+  window.previewHigh = function() { showDemoResult(88); };
+
+  function updateScoreDisplay(score, targetElId = 'scoreNumber') {
+    const el = document.getElementById(targetElId);
+    if (!el) return;
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
+    el.classList.add(colorClass);
   }
 
-  function previewMid() {
-    const midAnswers = generateMidCaseAnswers();
-    const result = scoreAnswers(midAnswers);
-    displayResults(result, midAnswers);
-    hideAllSectionsExceptResults();
-  }
-
-  function previewHigh() {
-    const bestAnswers = generateBestCaseAnswers();
-    const result = scoreAnswers(bestAnswers);
-    displayResults(result, bestAnswers);
-    hideAllSectionsExceptResults();
+  function updatePreviewScoreDisplay(score) {
+    const el = document.getElementById('previewScore');
+    if (!el) return;
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
+    el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
   }
 
   function backToQuiz() {
-    document.getElementById('auditSection').classList.remove('hidden');
     document.getElementById('resultsSection').classList.add('hidden');
-    window.scrollTo(0, 0);
-  }
-
-  function hideAllSectionsExceptResults() {
-    document.getElementById('emailGate').classList.add('hidden');
-    document.getElementById('auditSection').classList.add('hidden');
-    document.getElementById('resultsSection').classList.remove('hidden');
-    window.scrollTo(0, 0);
+    document.getElementById('auditSection').classList.remove('hidden');
   }
 
   function downloadPDF() {
@@ -1247,22 +1222,7 @@ const CONTENT = {
     window.scrollTo(0, 0);
   }
 
-})();
-  </script>
-  <script>
-    // Live-reload client: connects to dev WebSocket server and reloads on changes
-    (function(){
-      try {
-        const ws = new WebSocket('ws://localhost:8001');
-        ws.addEventListener('message', (ev) => {
-          try {
-            const msg = JSON.parse(ev.data);
-            if (msg && msg.type === 'reload') window.location.reload();
-          } catch (e) { window.location.reload(); }
-        });
-        ws.addEventListener('open', () => console.log('Live-reload connected'));
-      } catch (e) { /* ignore */ }
-    })();
+})(); 
   </script>
 </body>
 </html>
