@@ -379,6 +379,16 @@
     .retake-section {
       text-align: center;
     }
+
+    /* Fix: ensure preview and result score colors are applied consistently */
+    .score-number.strong { color: var(--color-success) !important; }
+    .score-number.medium { color: var(--color-warning) !important; }
+    .score-number.weak   { color: var(--color-error)   !important; }
+
+    .preview-score.strong { color: var(--color-success) !important; }
+    .preview-score.medium { color: var(--color-warning) !important; }
+    .preview-score.weak   { color: var(--color-error)   !important; }
+
     @media (max-width: 768px) {
       .container { padding: 28px 16px; }
       .section { padding: 22px; }
@@ -827,349 +837,414 @@ const CONTENT = {
 // 🚫 DON'T EDIT BELOW - AUTO-GENERATED CODE
 // ============================================
 
-const urlParams = new URLSearchParams(window.location.search);
-const isPreviewMode = urlParams.get('preview') === 'true';
-if (isPreviewMode) {
-  document.getElementById('previewButtons').classList.remove('hidden');
-}
-
-document.getElementById('mainHeadline').textContent = CONTENT.headline;
-document.getElementById('mainSubheadline').textContent = CONTENT.subheadline;
-document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle;
-document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle;
-// Results page headline & subheadline (match quiz)
-const resultsHeadlineEl = document.getElementById('resultsHeadline');
-const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
-if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.headline;
-if (resultsSubheadlineEl) resultsSubheadlineEl.textContent = CONTENT.subheadline;
-
-const formEl = document.getElementById('auditForm');
-CONTENT.questions.forEach(q => {
-  const section = document.createElement('div');
-  section.className = 'section';
-  section.innerHTML = `
-    <h2>${q.category}</h2>
-    <p class="question-label">${q.question}</p>
-    <div class="options">
-      ${q.options.map((opt, i) => `
-        <div class="option">
-          <input type="radio" name="${q.id}" id="${q.id}${String.fromCharCode(97+i)}" value="${opt.value}" />
-          <label for="${q.id}${String.fromCharCode(97+i)}">
-            <p class="label-title">${opt.title}</p>
-            <p class="label-desc">${opt.desc}</p>
-          </label>
-        </div>
-      `).join('')}
-    </div>
-  `;
-  formEl.appendChild(section);
-});
-
-let currentResult = null;
-let currentAnswers = null;
-
-function syncSelectedStates() {
-  document.querySelectorAll('.option').forEach((opt) => {
-    const radio = opt.querySelector('input[type="radio"]');
-    if (!radio) return;
-    opt.classList.toggle('is-selected', radio.checked);
-  });
-}
-
-formEl.addEventListener('click', (e) => {
-  const opt = e.target.closest('.option');
-  if (!opt || !formEl.contains(opt)) return;
-  const radio = opt.querySelector('input[type="radio"]');
-  if (radio && !radio.checked) {
-    radio.checked = true;
-    radio.dispatchEvent(new Event('change', { bubbles: true }));
+;(async function init(){
+  // Try to load external content.json to make editing easy.
+  try {
+    const res = await fetch('content.json?v=' + Date.now(), { cache: 'no-store' });
+    if (res.ok) {
+      const external = await res.json();
+      // shallow merge: top-level keys will override
+      Object.assign(CONTENT, external);
+    }
+  } catch (e) {
+    // ignore - fallback to inline CONTENT
+    console.warn('No external content.json loaded, using embedded content');
   }
-});
 
-formEl.addEventListener('change', () => {
-  syncSelectedStates();
-  updateProgress();
-});
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPreviewMode = urlParams.get('preview') === 'true';
+  if (isPreviewMode) {
+    document.getElementById('previewButtons').classList.remove('hidden');
+  }
 
-window.addEventListener('DOMContentLoaded', () => {
-  syncSelectedStates();
-});
+  document.getElementById('mainHeadline').textContent = CONTENT.headline;
+  document.getElementById('mainSubheadline').textContent = CONTENT.subheadline;
+  document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle;
+  document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle;
+  // Results page headline & subheadline (match quiz)
+  const resultsHeadlineEl = document.getElementById('resultsHeadline');
+  const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
+  if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.headline;
+  if (resultsSubheadlineEl) resultsSubheadlineEl.textContent = CONTENT.subheadline;
 
-function updateProgress() {
-  const answers = new FormData(formEl);
-  const total = CONTENT.questions.length;
-  let count = 0;
+  // Update booking link
+  const bookingSection = document.querySelector('.booking-section');
+  if (bookingSection && CONTENT.bookingText) {
+    const bookingTextEl = bookingSection.querySelector('.booking-text');
+    if (bookingTextEl) {
+      bookingTextEl.innerHTML = `${CONTENT.bookingText} <a class="booking-link" id="bookingLink" href="${CONTENT.bookingLinkUrl}" target="_blank">${CONTENT.bookingLinkText}</a>`;
+    }
+  }
+
+  const formEl = document.getElementById('auditForm');
   CONTENT.questions.forEach(q => {
-    if (answers.get(q.id)) count++;
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.innerHTML = `
+      <h2>${q.category}</h2>
+      <p class="question-label">${q.question}</p>
+      <div class="options">
+        ${q.options.map((opt, i) => `
+          <div class="option">
+            <input type="radio" name="${q.id}" id="${q.id}${String.fromCharCode(97+i)}" value="${opt.value}" />
+            <label for="${q.id}${String.fromCharCode(97+i)}">
+              <p class="label-title">${opt.title}</p>
+              <p class="label-desc">${opt.desc}</p>
+            </label>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    formEl.appendChild(section);
   });
-  const percent = (count / total) * 100;
-  document.getElementById('progressFill').style.width = `${percent}%`;
-}
 
-formEl.addEventListener('submit', function(e) {
-  e.preventDefault();
-  calculateScore();
-});
+  let currentResult = null;
+  let currentAnswers = null;
 
-function calculateScore() {
-  const answers = {};
-  const formData = new FormData(formEl);
-  for (let [key, value] of formData.entries()) {
-    answers[key] = value;
-  }
-  if (Object.keys(answers).length < CONTENT.questions.length) {
-    alert(`Please answer all ${CONTENT.questions.length} questions`);
-    return;
-  }
-  const result = scoreAnswers(answers);
-  currentResult = result;
-  currentAnswers = answers;
-  showEmailGate(result.score);
-}
-
-function showEmailGate(score) {
-  document.getElementById('previewScore').textContent = `${score}%`;
-  document.getElementById('emailGate').classList.remove('hidden');
-  document.getElementById('progressFill').style.width = '100%';
-}
-
-document.getElementById('emailForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const email = document.getElementById('userEmail').value;
-  const submitBtn = document.getElementById('submitEmail');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Sending...';
-  try {
-    await sendToConvertKit(email, currentAnswers, currentResult);
-    document.getElementById('emailGate').classList.add('hidden');
-    displayResults(currentResult, currentAnswers);
-  } catch (error) {
-    console.error('Error:', error);
-    alert('There was an error. Please try again.');
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Get My Results';
-  }
-});
-
-async function sendToConvertKit(email, answers, result) {
-  const url = `https://api.convertkit.com/v3/forms/${CONTENT.convertKitFormId}/subscribe`;
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        api_key: CONTENT.convertKitApiKey,
-        email: email,
-        fields: {
-          score: result.score,
-          gaps: result.gaps.map(g => g.title).join(', '),
-          strengths: result.strengths.map(s => s.title).join(', ')
-        }
-      })
+  function syncSelectedStates() {
+    document.querySelectorAll('.option').forEach((opt) => {
+      const radio = opt.querySelector('input[type="radio"]');
+      if (!radio) return;
+      opt.classList.toggle('is-selected', radio.checked);
     });
-    if (!response.ok) {
-      console.warn('ConvertKit API returned non-OK:', response.status, response.statusText);
+  }
+
+  formEl.addEventListener('click', (e) => {
+    const opt = e.target.closest('.option');
+    if (!opt || !formEl.contains(opt)) return;
+    const radio = opt.querySelector('input[type="radio"]');
+    if (radio && !radio.checked) {
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+
+  formEl.addEventListener('change', () => {
+    syncSelectedStates();
+    updateProgress();
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    syncSelectedStates();
+  });
+
+  function updateProgress() {
+    const answers = new FormData(formEl);
+    const total = CONTENT.questions.length;
+    let count = 0;
+    CONTENT.questions.forEach(q => {
+      if (answers.get(q.id)) count++;
+    });
+    const percent = (count / total) * 100;
+    document.getElementById('progressFill').style.width = `${percent}%`;
+  }
+
+  formEl.addEventListener('submit', function(e) {
+    e.preventDefault();
+    calculateScore();
+  });
+
+  function calculateScore() {
+    const answers = {};
+    const formData = new FormData(formEl);
+    for (let [key, value] of formData.entries()) {
+      answers[key] = value;
+    }
+    if (Object.keys(answers).length < CONTENT.questions.length) {
+      alert(`Please answer all ${CONTENT.questions.length} questions`);
+      return;
+    }
+    const result = scoreAnswers(answers);
+    currentResult = result;
+    currentAnswers = answers;
+    showEmailGate(result.score);
+  }
+
+  function showEmailGate(score) {
+    document.getElementById('previewScore').textContent = `${score}%`;
+    document.getElementById('emailGate').classList.remove('hidden');
+    document.getElementById('progressFill').style.width = '100%';
+  }
+
+  document.getElementById('emailForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('userEmail').value;
+    const submitBtn = document.getElementById('submitEmail');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    try {
+      await sendToConvertKit(email, currentAnswers, currentResult);
+      document.getElementById('emailGate').classList.add('hidden');
+      displayResults(currentResult, currentAnswers);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('There was an error. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Get My Results';
+    }
+  });
+
+  async function sendToConvertKit(email, answers, result) {
+    const url = `https://api.convertkit.com/v3/forms/${CONTENT.convertKitFormId}/subscribe`;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: CONTENT.convertKitApiKey,
+          email: email,
+          fields: {
+            score: result.score,
+            gaps: result.gaps.map(g => g.title).join(', '),
+            strengths: result.strengths.map(s => s.title).join(', ')
+          }
+        })
+      });
+      if (!response.ok) {
+        console.warn('ConvertKit API returned non-OK:', response.status, response.statusText);
+        return { status: 'simulated', success: true };
+      }
+      return response.json();
+    } catch (err) {
+      console.warn('ConvertKit fetch failed, falling back to simulated success.', err);
       return { status: 'simulated', success: true };
     }
-    return response.json();
-  } catch (err) {
-    console.warn('ConvertKit fetch failed, falling back to simulated success.', err);
-    return { status: 'simulated', success: true };
   }
-}
 
-function scoreAnswers(answers) {
-  let score = 0;
-  const gaps = [];
-  const strengths = [];
+  function scoreAnswers(answers) {
+    let score = 0;
+    const gaps = [];
+    const strengths = [];
 
-  CONTENT.questions.forEach(q => {
-    const selectedValue = answers[q.id];
-    const selectedOption = q.options.find(opt => opt.value === selectedValue);
+    CONTENT.questions.forEach(q => {
+      const selectedValue = answers[q.id];
+      const selectedOption = q.options.find(opt => opt.value === selectedValue);
+      
+      if (selectedOption) {
+        score += selectedOption.points;
+        
+        if (selectedOption.strength) {
+          strengths.push(selectedOption.strength);
+        }
+        
+        const bestOption = q.options.reduce((best, opt) => 
+          opt.points > best.points ? opt : best
+        );
+        
+        if (selectedOption.value !== bestOption.value && bestOption.gapIfNotChosen) {
+          gaps.push(bestOption.gapIfNotChosen);
+        }
+      }
+    });
+
+    const maxScore = CONTENT.questions.length;
+    const percentScore = Math.round((score / maxScore) * 100);
     
-    if (selectedOption) {
-      score += selectedOption.points;
-      
-      if (selectedOption.strength) {
-        strengths.push(selectedOption.strength);
-      }
-      
-      const bestOption = q.options.reduce((best, opt) => 
-        opt.points > best.points ? opt : best
-      );
-      
-      if (selectedOption.value !== bestOption.value && bestOption.gapIfNotChosen) {
-        gaps.push(bestOption.gapIfNotChosen);
-      }
-    }
-  });
-
-  const maxScore = CONTENT.questions.length;
-  const percentScore = Math.round((score / maxScore) * 100);
-  
-  return { score: percentScore, gaps, strengths };
-}
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-function displayResults(result, answers) {
-  document.getElementById('resultsSection').classList.remove('hidden');
-  document.getElementById('auditSection').classList.add('hidden');
-
-  updateScoreDisplay(result.score, 'scoreNumber');
-
-  const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
-  if (tier) {
-    const titleEl = document.getElementById('resultTitle');
-    const subtitleEl = document.getElementById('resultSubtitle');
-    if (titleEl) titleEl.textContent = tier.title || '';
-    if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
+    return { score: percentScore, gaps, strengths };
   }
 
-  const contentEl = document.getElementById('resultsContent');
-  contentEl.innerHTML = '';
-
-  if (result.gaps && result.gaps.length) {
-    const gapsWrap = document.createElement('div');
-    gapsWrap.className = 'unified-gap-card';
-    gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
-    result.gaps.forEach(g => {
-      const div = document.createElement('div');
-      div.className = 'gap-section';
-      div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
-      gapsWrap.appendChild(div);
-    });
-    contentEl.appendChild(gapsWrap);
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
-  const actionsWrap = document.createElement('div');
-  actionsWrap.className = 'actions-section';
-  actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
-  const list = document.createElement('div');
-  list.className = 'action-items';
-  (CONTENT.actionPlanRules || []).forEach(rule => {
-    if (!rule.triggerGaps || !rule.actions) return;
-    const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
-    if (!triggersMatched) {
-      const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
-      if (!fallbackMatch) return;
+  function displayResults(result, answers) {
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('auditSection').classList.add('hidden');
+
+    updateScoreDisplay(result.score, 'scoreNumber');
+
+    const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
+    if (tier) {
+      const titleEl = document.getElementById('resultTitle');
+      const subtitleEl = document.getElementById('resultSubtitle');
+      if (titleEl) titleEl.textContent = tier.title || '';
+      if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
     }
 
-    rule.actions.forEach(a => {
-      const ai = document.createElement('div');
-      ai.className = 'action-item';
-      const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
-      ai.innerHTML = `
-        <div class="action-content">
-          <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
-          <h4>${escapeHtml(a.title || '')}</h4>
-          <p>${escapeHtml(a.desc || '')}</p>
-        </div>
-      `;
-      list.appendChild(ai);
-    });
-  });
+    const contentEl = document.getElementById('resultsContent');
+    contentEl.innerHTML = '';
 
-  if (list.children.length) {
-    actionsWrap.appendChild(list);
-    contentEl.appendChild(actionsWrap);
-  } else {
-    actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
-    contentEl.appendChild(actionsWrap);
+    if (result.gaps && result.gaps.length) {
+      const gapsWrap = document.createElement('div');
+      gapsWrap.className = 'unified-gap-card';
+      gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
+      result.gaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'gap-section';
+        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        if (g.trend) {
+          div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
+        }
+        // Quick actions block (if actionPlanRules match)
+        if (g.quickActions && Array.isArray(g.quickActions)) {
+          const qa = document.createElement('div');
+          qa.className = 'actions-section';
+          qa.innerHTML = '<div class="actions-label">Quick actions</div>';
+          g.quickActions.forEach(a => {
+            const p = document.createElement('div');
+            p.className = 'action-bullet';
+            p.innerHTML = `<strong>${escapeHtml(a.title)}</strong> — ${escapeHtml(a.desc)}`;
+            qa.appendChild(p);
+          });
+          div.appendChild(qa);
+        }
+        gapsWrap.appendChild(div);
+      });
+      contentEl.appendChild(gapsWrap);
+    }
+
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'actions-section';
+    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
+    const list = document.createElement('div');
+    list.className = 'action-items';
+    (CONTENT.actionPlanRules || []).forEach(rule => {
+      if (!rule.triggerGaps || !rule.actions) return;
+      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
+      if (!triggersMatched) {
+        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
+        if (!fallbackMatch) return;
+      }
+
+      rule.actions.forEach(a => {
+        const ai = document.createElement('div');
+        ai.className = 'action-item';
+        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
+        ai.innerHTML = `
+          <div class="action-content">
+            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
+            <h4>${escapeHtml(a.title || '')}</h4>
+            <p>${escapeHtml(a.desc || '')}</p>
+          </div>
+        `;
+        list.appendChild(ai);
+      });
+    });
+
+    if (list.children.length) {
+      actionsWrap.appendChild(list);
+      contentEl.appendChild(actionsWrap);
+    } else {
+      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
+      contentEl.appendChild(actionsWrap);
+    }
+
+    const bookingLinkEl = document.getElementById('bookingLink');
+    if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
   }
 
-  const bookingLinkEl = document.getElementById('bookingLink');
-  if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
-}
+  // Deterministic demo builder to match screenshots and authored content
+  function buildDemoResult(score) {
+    // Determine tier info
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
 
-function buildDemoResult(score) {
-  const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
-  const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
-
-  const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
-  let pickedTriggers = [];
-  if (score < 50) pickedTriggers = allTriggers.slice(0, 2);
-  else if (score < 75) pickedTriggers = allTriggers.slice(0, 1);
-  else pickedTriggers = [];
-
-  const gaps = pickedTriggers.map(t => ({ title: t, desc: `Demo gap: ${t} — consider improving this area.` }));
-
-  const strengths = [];
-  (CONTENT.questions || []).forEach(q => {
-    (q.options || []).forEach(o => {
-      if (o.strength && strengths.length < 2) strengths.push(o.strength);
+    // Collect authored gaps from questions (gapIfNotChosen)
+    const authoredGaps = [];
+    (CONTENT.questions || []).forEach(q => {
+      (q.options || []).forEach(o => {
+        if (o.gapIfNotChosen) authoredGaps.push(o.gapIfNotChosen);
+      });
     });
-  });
 
-  return { score, gaps, strengths, tier };
-}
+    // Collect strengths (authored)
+    const authoredStrengths = [];
+    (CONTENT.questions || []).forEach(q => {
+      (q.options || []).forEach(o => {
+        if (o.strength) authoredStrengths.push(o.strength);
+      });
+    });
 
-function showDemoResult(score) {
-  const eg = document.getElementById('emailGate'); if (eg) eg.classList.add('hidden');
-  const pf = document.getElementById('progressFill'); if (pf) pf.style.width = '100%';
+    // Build result based on the exact score buckets we want
+    let gaps = [];
+    let strengths = [];
 
-  const demo = buildDemoResult(score);
+    if (score <= 0) {
+      // Low: show all authored gaps (full priority list)
+      gaps = authoredGaps.slice();
+      strengths = [];
+    } else if (score < 75) {
+      // Mid: show top 3 gaps and 1 strength (to match screenshot balance)
+      gaps = authoredGaps.slice(0, Math.min(3, authoredGaps.length));
+      strengths = authoredStrengths.slice(0, 1);
+    } else {
+      // High: show strengths (no gaps)
+      gaps = [];
+      strengths = authoredStrengths.slice(0, Math.min(8, authoredStrengths.length));
+    }
 
-  if (typeof displayResults === 'function') {
-    displayResults(demo, {});
-    updateScoreDisplay(demo.score, 'scoreNumber');
-  } else {
-    updatePreviewScoreDisplay(score);
-    document.getElementById('emailGate').classList.remove('hidden');
+    // Optionally add quickActions by mapping actionPlanRules -> gaps if desired.
+    // (Not strictly necessary because displayResults uses actionPlanRules for recommended actions.)
+    return { score, gaps, strengths, tier };
   }
-}
 
-window.previewLow  = function() { showDemoResult(32); };
-window.previewMid  = function() { showDemoResult(62); };
-window.previewHigh = function() { showDemoResult(88); };
+  function showDemoResult(score) {
+    const eg = document.getElementById('emailGate'); if (eg) eg.classList.add('hidden');
+    const pf = document.getElementById('progressFill'); if (pf) pf.style.width = '100%';
 
-function updateScoreDisplay(score, targetElId = 'scoreNumber') {
-  const el = document.getElementById(targetElId);
-  if (!el) return;
-  const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
-  const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
-  el.textContent = `${score}%`;
-  el.classList.remove('strong','medium','weak');
-  const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
-  el.classList.add(colorClass);
-}
+    const demo = buildDemoResult(score);
 
-function updatePreviewScoreDisplay(score) {
-  const el = document.getElementById('previewScore');
-  if (!el) return;
-  el.textContent = `${score}%`;
-  el.classList.remove('strong','medium','weak');
-  const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
-  const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
-  el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
-}
+    if (typeof displayResults === 'function') {
+      displayResults(demo, {});
+      updateScoreDisplay(demo.score, 'scoreNumber');
+    } else {
+      updatePreviewScoreDisplay(score);
+      document.getElementById('emailGate').classList.remove('hidden');
+    }
+  }
 
-function backToQuiz() {
-  document.getElementById('resultsSection').classList.add('hidden');
-  document.getElementById('auditSection').classList.remove('hidden');
-}
+  // Use the specific screenshot numbers
+  window.previewLow  = function() { showDemoResult(0); };
+  window.previewMid  = function() { showDemoResult(44); };
+  window.previewHigh = function() { showDemoResult(100); };
 
-function downloadPDF() {
-  window.print();
-}
+  function updateScoreDisplay(score, targetElId = 'scoreNumber') {
+    const el = document.getElementById(targetElId);
+    if (!el) return;
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
+    el.classList.add(colorClass);
+  }
 
-function resetAudit() {
-  formEl.reset();
-  document.getElementById('auditSection').classList.remove('hidden');
-  document.getElementById('resultsSection').classList.add('hidden');
-  document.getElementById('emailGate').classList.add('hidden');
-  document.getElementById('progressFill').style.width = '0%';
-  currentResult = null;
-  currentAnswers = null;
-  window.scrollTo(0, 0);
-}
+  function updatePreviewScoreDisplay(score) {
+    const el = document.getElementById('previewScore');
+    if (!el) return;
+    el.textContent = `${score}%`;
+    el.classList.remove('strong','medium','weak');
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
+    el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
+  }
+
+  function backToQuiz() {
+    document.getElementById('resultsSection').classList.add('hidden');
+    document.getElementById('auditSection').classList.remove('hidden');
+  }
+
+  function downloadPDF() {
+    window.print();
+  }
+
+  function resetAudit() {
+    formEl.reset();
+    document.getElementById('auditSection').classList.remove('hidden');
+    document.getElementById('resultsSection').classList.add('hidden');
+    document.getElementById('emailGate').classList.add('hidden');
+    document.getElementById('progressFill').style.width = '0%';
+    currentResult = null;
+    currentAnswers = null;
+    window.scrollTo(0, 0);
+  }
+
+})(); 
   </script>
 </body>
 </html>
