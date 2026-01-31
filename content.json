@@ -18,7 +18,7 @@
         { "value": "none", "points": 0, "title": "Currently not measuring", "desc": "Not tracking performance metrics, triggers, or events" },
         { "value": "opens", "points": 0.25, "title": "Open rates (primary metric)", "desc": "This is our main KPI" },
         { "value": "clicks", "points": 0.25, "title": "Clicks & conversions", "desc": "Shifted away from opens as primary" },
-        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You measure revenue impact per send." } }
+        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You measure revenue impact per send." }, "gapIfNotChosen": { "title": "Email Metrics Gap", "desc": "Open rates became less reliable after privacy changes. Strong teams prioritize clicks, conversions and revenue per send.", "trend": "Deliverability is increasingly tied to engagement quality not vanity metrics." } }
       ]
     },
     {
@@ -28,7 +28,7 @@
       "options": [
         { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
         { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role, company size, or past purchase" },
-        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency, engagement depth, LTV, dynamic content and automated journeys", "strength": { "title": "Personalization", "desc": "You use behavioral personalization and automations." } }
+        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency, engagement depth, LTV, dynamic content and automated journeys", "strength": { "title": "Personalization", "desc": "You use behavioral personalization and automations." }, "gapIfNotChosen": { "title": "Personalization Gap", "desc": "Basic segmentation helps but behavior-based personalization + automated sequences is the new baseline for relevance.", "trend": "Expectations have shifted toward lifecycle automation and engagement-based segmentation." } }
       ]
     },
     {
@@ -39,7 +39,7 @@
         { "value": "none", "points": 0, "title": "Currently have no tracking system", "desc": "May or may not have an email opt-in, but not using it" },
         { "value": "leak", "points": 0.25, "title": "We mostly lose them", "desc": "We get traffic but have limited tracking/capture and no consistent follow-up" },
         { "value": "capture", "points": 0.5, "title": "We capture some intent + do manual follow-up", "desc": "Basic tracking + forms; follow-up happens but it's inconsistent" },
-        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing/case study/demo page) trigger email/retargeting follow-up" }
+        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing/case study/demo page) trigger email/retargeting follow-up", "gapIfNotChosen": { "title": "Website Intent Capture Gap", "desc": "If traffic lands and leaves with no capture you are paying for attention without building a follow-up asset.", "trend": "First-party data + intent signals are becoming the core advantage for personalization and timing." } }
       ]
     },
     {
@@ -49,8 +49,8 @@
       "options": [
         { "value": "ad-hoc", "points": 0, "title": "Ad-hoc", "desc": "Manual reminders and memory-based follow-up" },
         { "value": "mapped", "points": 0.5, "title": "Documented but not automated", "desc": "We know the steps but execution is inconsistent" },
-        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-up System", "desc": "You have automated follow-up triggers." } },
-        { "value": "crm", "points": 1, "title": "Rich CRM + behavior-based segmentation", "desc": "We track communications and use behavior-based segmentation" }
+        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-up System", "desc": "You have automated follow-up triggers." }, "gapIfNotChosen": { "title": "Lead Follow-Up Gap", "desc": "Manual follow-up leads to inconsistent execution, missed timing and lost opportunities.", "trend": "Behavior-triggered follow-up systems reduce leakage and improve conversion rates." } },
+        { "value": "crm", "points": 1, "title": "Rich CRM + behavior-based segmentation", "desc": "We track communications and use behavior-based segmentation", "gapIfNotChosen": { "title": "Lead Follow-Up Gap", "desc": "Manual follow-up leads to inconsistent execution, missed timing and lost opportunities.", "trend": "Behavior-triggered follow-up systems reduce leakage and improve conversion rates." } }
       ]
     },
     {
@@ -61,7 +61,7 @@
         { "value": "unsure", "points": 0, "title": "Not sure", "desc": "Do not have a system or not actively tracking" },
         { "value": "acq-heavy", "points": 0.25, "title": "80%+ new 20% or less existing", "desc": "New customers are the main source of revenue" },
         { "value": "balanced", "points": 0.25, "title": "50/50 split", "desc": "Both generate an equal amount of revenue" },
-        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You prioritize retention and expansion." } }
+        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You prioritize retention and expansion." }, "gapIfNotChosen": { "title": "LTV & Retention Gap", "desc": "Teams that over-prioritize acquisition often miss compounding growth from retention and expansion.", "trend": "Retention and expansion are increasingly treated as primary growth levers." } }
       ]
     },
     {
@@ -71,7 +71,7 @@
       "options": [
         { "value": "none", "points": 0, "title": "No", "desc": "Rely on paid reach + outbound" },
         { "value": "basic", "points": 0.5, "title": "Starting one", "desc": "Early newsletter / early audience building" },
-        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a channel that compounds attention." } }
+        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a channel that compounds attention." }, "gapIfNotChosen": { "title": "Owned Distribution Gap", "desc": "Without an owned channel you depend on paid reach and outbound effort for attention.", "trend": "Owned audiences reduce CAC and create compounding distribution." } }
       ]
     },
     {
@@ -81,7 +81,7 @@
       "options": [
         { "value": "isolated", "points": 0, "title": "Isolated tactics", "desc": "Email OR ads OR LinkedIn; focused on individual channel strategies" },
         { "value": "coordinated", "points": 0.5, "title": "Coordinated across 2–3 channels", "desc": "Some synergy but not fully integrated" },
-        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem", "desc": "You have an integrated channel strategy." } }
+        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem", "desc": "You have an integrated channel strategy." }, "gapIfNotChosen": { "title": "Distribution & Ecosystem Gap", "desc": "Isolated channels underperform integrated ecosystems where channels feed each other.", "trend": "Community and owned distribution increasingly compete with paid reach." } }
       ]
     },
     {
@@ -92,7 +92,7 @@
         { "value": "pitch", "points": 0, "title": "Product-first", "desc": "Lead with services, features, benefits, and / or pricing" },
         { "value": "proof", "points": 0.5, "title": "Proof-driven", "desc": "Utilize case studies, results, testimonials to demonstrate expertise" },
         { "value": "trust", "points": 0.5, "title": "Trust-first, brand-focused", "desc": "Lead with insights and brand awareness" },
-        { "value": "customer-first", "points": 1, "title": "Customer-focused", "desc": "Consistent visible thought leadership, case studies, and education" }
+        { "value": "customer-first", "points": 1, "title": "Customer-focused", "desc": "Consistent visible thought leadership, case studies, and education", "gapIfNotChosen": { "title": "Positioning Gap", "desc": "Leading with product details can underperform leading with education, insights, and thought leadership based on the current landscape and regular feedback loops.", "trend": "Trust is increasingly built through building relationships with new and existing clients/customers or prospects, visible founder or executive presence, providing value and education, proof of expertise, and credible distribution with an obvious focus and clear understanding of the customer." } }
       ]
     }
   ],
