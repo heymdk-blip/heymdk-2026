@@ -1089,6 +1089,7 @@ function displayResults(result, answers) {
   if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
 }
 
+// Improved buildDemoResult: prefer real gap objects (gapIfNotChosen) from CONTENT.questions
 function buildDemoResult(score) {
   const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
   const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
@@ -1099,8 +1100,32 @@ function buildDemoResult(score) {
   else if (score < 75) pickedTriggers = allTriggers.slice(0, 1);
   else pickedTriggers = [];
 
-  const gaps = pickedTriggers.map(t => ({ title: t, desc: `Demo gap: ${t} — consider improving this area.` }));
+  // Try to resolve each trigger to a gap object defined in questions (gapIfNotChosen)
+  const gaps = pickedTriggers.map(trigger => {
+    // search questions/options for a gapIfNotChosen that mentions the trigger
+    for (const q of (CONTENT.questions || [])) {
+      for (const o of (q.options || [])) {
+        const gap = o.gapIfNotChosen;
+        if (!gap) continue;
+        // match trigger to gap title or desc (case-insensitive)
+        const title = (gap.title || '').toLowerCase();
+        const desc = (gap.desc || '').toLowerCase();
+        if ((title && title.includes(trigger.toLowerCase())) || (desc && desc.includes(trigger.toLowerCase()))) {
+          return gap;
+        }
+      }
+    }
+    // fallback: try to find a gap object in actionPlanRules (if present)
+    for (const rule of (CONTENT.actionPlanRules || [])) {
+      if ((rule.triggerGaps || []).some(t => t.toLowerCase().includes(trigger.toLowerCase()))) {
+        return { title: trigger, desc: `We detected a gap related to ${trigger}. Consider improving this area.` };
+      }
+    }
+    // final fallback: minimal demo gap
+    return { title: trigger, desc: `Demo gap: ${trigger} — consider improving this area.` };
+  });
 
+  // Pull up to two strengths from question options that define a `strength` field
   const strengths = [];
   (CONTENT.questions || []).forEach(q => {
     (q.options || []).forEach(o => {

@@ -1198,32 +1198,77 @@ const CONTENT = {
     return answers;
   }
 
-  function previewLow() {
-    const worstAnswers = generateWorstCaseAnswers();
-    const result = scoreAnswers(worstAnswers);
-    displayResults(result, worstAnswers);
-    hideAllSectionsExceptResults();
+  // Improved buildDemoResult: prefer real gap objects (gapIfNotChosen) from CONTENT.questions
+  function buildDemoResult(score) {
+    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
+
+    const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
+    let pickedTriggers = [];
+    if (score < 50) pickedTriggers = allTriggers.slice(0, 2);
+    else if (score < 75) pickedTriggers = allTriggers.slice(0, 1);
+    else pickedTriggers = [];
+
+    // Try to resolve each trigger to a gap object defined in questions (gapIfNotChosen)
+    const gaps = pickedTriggers.map(trigger => {
+      // search questions/options for a gapIfNotChosen that mentions the trigger
+      for (const q of (CONTENT.questions || [])) {
+        for (const o of (q.options || [])) {
+          const gap = o.gapIfNotChosen;
+          if (!gap) continue;
+          // match trigger to gap title or desc (case-insensitive)
+          const title = (gap.title || '').toLowerCase();
+          const desc = (gap.desc || '').toLowerCase();
+          if ((title && title.includes(trigger.toLowerCase())) || (desc && desc.includes(trigger.toLowerCase()))) {
+            return gap;
+          }
+        }
+      }
+      // fallback: try to find a gap object in actionPlanRules (if present)
+      for (const rule of (CONTENT.actionPlanRules || [])) {
+        if ((rule.triggerGaps || []).some(t => t.toLowerCase().includes(trigger.toLowerCase()))) {
+          return { title: trigger, desc: `We detected a gap related to ${trigger}. Consider improving this area.` };
+        }
+      }
+      // final fallback: minimal demo gap
+      return { title: trigger, desc: `Demo gap: ${trigger} — consider improving this area.` };
+    });
+
+    // Pull up to two strengths from question options that define a `strength` field
+    const strengths = [];
+    (CONTENT.questions || []).forEach(q => {
+      (q.options || []).forEach(o => {
+        if (o.strength && strengths.length < 2) strengths.push(o.strength);
+      });
+    });
+
+    return { score, gaps, strengths, tier };
   }
 
-  function previewMid() {
-    const midAnswers = generateMidCaseAnswers();
-    const result = scoreAnswers(midAnswers);
-    displayResults(result, midAnswers);
+  // Expose preview functions to global scope for onclick handlers
+  window.previewLow = function() {
+    const result = buildDemoResult(32);
+    displayResults(result, {});
     hideAllSectionsExceptResults();
-  }
+  };
 
-  function previewHigh() {
-    const bestAnswers = generateBestCaseAnswers();
-    const result = scoreAnswers(bestAnswers);
-    displayResults(result, bestAnswers);
+  window.previewMid = function() {
+    const result = buildDemoResult(62);
+    displayResults(result, {});
     hideAllSectionsExceptResults();
-  }
+  };
 
-  function backToQuiz() {
+  window.previewHigh = function() {
+    const result = buildDemoResult(88);
+    displayResults(result, {});
+    hideAllSectionsExceptResults();
+  };
+
+  window.backToQuiz = function() {
     document.getElementById('auditSection').classList.remove('hidden');
     document.getElementById('resultsSection').classList.add('hidden');
     window.scrollTo(0, 0);
-  }
+  };
 
   function hideAllSectionsExceptResults() {
     document.getElementById('emailGate').classList.add('hidden');
