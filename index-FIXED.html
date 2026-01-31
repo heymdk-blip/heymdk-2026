@@ -379,6 +379,16 @@
     .retake-section {
       text-align: center;
     }
+
+    /* Fix: ensure preview and result score colors are applied consistently */
+    .score-number.strong { color: var(--color-success) !important; }
+    .score-number.medium { color: var(--color-warning) !important; }
+    .score-number.weak   { color: var(--color-error)   !important; }
+
+    .preview-score.strong { color: var(--color-success) !important; }
+    .preview-score.medium { color: var(--color-warning) !important; }
+    .preview-score.weak   { color: var(--color-error)   !important; }
+
     @media (max-width: 768px) {
       .container { padding: 28px 16px; }
       .section { padding: 22px; }
@@ -1070,6 +1080,19 @@ const CONTENT = {
         if (g.trend) {
           div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
         }
+        // Quick actions block (if actionPlanRules match)
+        if (g.quickActions && Array.isArray(g.quickActions)) {
+          const qa = document.createElement('div');
+          qa.className = 'actions-section';
+          qa.innerHTML = '<div class="actions-label">Quick actions</div>';
+          g.quickActions.forEach(a => {
+            const p = document.createElement('div');
+            p.className = 'action-bullet';
+            p.innerHTML = `<strong>${escapeHtml(a.title)}</strong> — ${escapeHtml(a.desc)}`;
+            qa.appendChild(p);
+          });
+          div.appendChild(qa);
+        }
         gapsWrap.appendChild(div);
       });
       contentEl.appendChild(gapsWrap);
@@ -1115,50 +1138,48 @@ const CONTENT = {
     if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
   }
 
-  // Improved buildDemoResult: prefer real gap objects (gapIfNotChosen) from CONTENT.questions
+  // Deterministic demo builder to match screenshots and authored content
   function buildDemoResult(score) {
+    // Determine tier info
     const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
     const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
 
-    const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
-    let pickedTriggers = [];
-    if (score < 50) pickedTriggers = allTriggers.slice(0, 2);
-    else if (score < 75) pickedTriggers = allTriggers.slice(0, 1);
-    else pickedTriggers = [];
-
-    // Try to resolve each trigger to a gap object defined in questions (gapIfNotChosen)
-    const gaps = pickedTriggers.map(trigger => {
-      // search questions/options for a gapIfNotChosen that mentions the trigger
-      for (const q of (CONTENT.questions || [])) {
-        for (const o of (q.options || [])) {
-          const gap = o.gapIfNotChosen;
-          if (!gap) continue;
-          // match trigger to gap title or desc (case-insensitive)
-          const title = (gap.title || '').toLowerCase();
-          const desc = (gap.desc || '').toLowerCase();
-          if ((title && title.includes(trigger.toLowerCase())) || (desc && desc.includes(trigger.toLowerCase()))) {
-            return gap;
-          }
-        }
-      }
-      // fallback: try to find a gap object in actionPlanRules (if present)
-      for (const rule of (CONTENT.actionPlanRules || [])) {
-        if ((rule.triggerGaps || []).some(t => t.toLowerCase().includes(trigger.toLowerCase()))) {
-          return { title: trigger, desc: `We detected a gap related to ${trigger}. Consider improving this area.` };
-        }
-      }
-      // final fallback: minimal demo gap
-      return { title: trigger, desc: `Demo gap: ${trigger} — consider improving this area.` };
-    });
-
-    // Pull up to two strengths from question options that define a `strength` field
-    const strengths = [];
+    // Collect authored gaps from questions (gapIfNotChosen)
+    const authoredGaps = [];
     (CONTENT.questions || []).forEach(q => {
       (q.options || []).forEach(o => {
-        if (o.strength && strengths.length < 2) strengths.push(o.strength);
+        if (o.gapIfNotChosen) authoredGaps.push(o.gapIfNotChosen);
       });
     });
 
+    // Collect strengths (authored)
+    const authoredStrengths = [];
+    (CONTENT.questions || []).forEach(q => {
+      (q.options || []).forEach(o => {
+        if (o.strength) authoredStrengths.push(o.strength);
+      });
+    });
+
+    // Build result based on the exact score buckets we want
+    let gaps = [];
+    let strengths = [];
+
+    if (score <= 0) {
+      // Low: show all authored gaps (full priority list)
+      gaps = authoredGaps.slice();
+      strengths = [];
+    } else if (score < 75) {
+      // Mid: show top 3 gaps and 1 strength (to match screenshot balance)
+      gaps = authoredGaps.slice(0, Math.min(3, authoredGaps.length));
+      strengths = authoredStrengths.slice(0, 1);
+    } else {
+      // High: show strengths (no gaps)
+      gaps = [];
+      strengths = authoredStrengths.slice(0, Math.min(8, authoredStrengths.length));
+    }
+
+    // Optionally add quickActions by mapping actionPlanRules -> gaps if desired.
+    // (Not strictly necessary because displayResults uses actionPlanRules for recommended actions.)
     return { score, gaps, strengths, tier };
   }
 
@@ -1177,9 +1198,10 @@ const CONTENT = {
     }
   }
 
-  window.previewLow  = function() { showDemoResult(32); };
-  window.previewMid  = function() { showDemoResult(62); };
-  window.previewHigh = function() { showDemoResult(88); };
+  // Use the specific screenshot numbers
+  window.previewLow  = function() { showDemoResult(0); };
+  window.previewMid  = function() { showDemoResult(44); };
+  window.previewHigh = function() { showDemoResult(100); };
 
   function updateScoreDisplay(score, targetElId = 'scoreNumber') {
     const el = document.getElementById(targetElId);
