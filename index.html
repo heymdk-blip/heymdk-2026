@@ -393,7 +393,6 @@
       <button class="btn btn-secondary" onclick="previewLow()">Low Score Preview</button>
       <button class="btn btn-secondary" onclick="previewMid()">Mid Score Preview</button>
       <button class="btn btn-secondary" onclick="previewHigh()">High Score Preview</button>
-      <a class="btn btn-secondary" href="/heymdk-2026/editor.html" target="_blank" rel="noopener">Open Editor</a>
       <button class="btn btn-primary" onclick="backToQuiz()">Back to Quiz</button>
     </div>
   </div>
@@ -454,118 +453,312 @@
   </div>
 
   <script>
- // ============================================
- // 📝 EDIT ALL CONTENT HERE - NOTHING ELSE!
- // ============================================
+// ============================================
+// 📝 EDIT ALL CONTENT HERE - NOTHING ELSE!
+// ============================================
 
 const CONTENT = {
-  // Main Headlines (these can include simple HTML — e.g. use <strong> to bold)
-  headline: "How Does Your Strategy Stack Up Against 2026 Market Trends?",
-  subheadline: "Take this 5-minute assessment to see what you might want to prioritize first.",
-
-  // OPTIONAL: Results-specific overrides (if present they will be used on the results page)
-  // Use HTML here as well (the code uses innerHTML).
-  resultsHeadline: "How Does Your Strategy Stack Up?",
-  resultsSubheadline: "You versus what's working in 2026",
-
+  // Main Headlines
+  headline: "How Does Your Strategy Stack Up Against 2026 Market Reality?",
+  subheadline: "Take this 8-question audit to see where you stand and what to fix first.",
+  
   // Email Gate
-  emailGateTitle: "Get Your Personalized Breakdown",
-  emailGateSubtitle: "Enter your email to receive your personalized breakdown",
-
-  // ConvertKit Integration (note: exposing API keys client-side is insecure — consider server-side)
+  emailGateTitle: "Get Your Personalized Results",
+  emailGateSubtitle: "Enter your email to see your score and action plan",
+  
+  // ConvertKit Integration
   convertKitFormId: '8975679',
   convertKitApiKey: 'kit_6d1448764627b0fa1dfa960f512981c4',
-
+  
   // Booking Link (shown at bottom of results)
   bookingText: "Want help closing these gaps?",
   bookingLinkText: "→ Book a Strategy Call",
   bookingLinkUrl: "https://calendly.com/your-link",
-
-  // Questions (embedded from content.json)
+  
+  // Questions
   questions: [
     {
-      "id": "q1",
-      "category": "Email Strategy",
-      "question": "1. How do you currently measure email performance?",
-      "options": [
-        { "value": "none", "points": 0, "title": "Currently not measuring", "desc": "Not tracking performance metrics, triggers, or events" },
-        { "value": "opens", "points": 0.25, "title": "Open rates (primary metric)", "desc": "This is our main KPI" },
-        { "value": "clicks", "points": 0.25, "title": "Clicks & conversions", "desc": "Shifted away from opens as primary" },
-        { "value": "revenue", "points": 1, "title": "Revenue & lifetime value (LTV) per send", "desc": "Tracking full-funnel impact", "strength": { "title": "Email Metrics", "desc": "You measure revenue impact per send." } }
+      id: 'q1',
+      category: 'Email Strategy',
+      question: '1. How do you currently measure email performance?',
+      options: [
+        { 
+          value: 'none', 
+          points: 0,
+          title: 'Currently not measuring', 
+          desc: 'Not tracking performance metrics, triggers, or events'
+        },
+        { 
+          value: 'opens', 
+          points: 0.25,
+          title: 'Open rates (primary metric)', 
+          desc: 'This is our main KPI'
+        },
+        { 
+          value: 'clicks', 
+          points: 0.25,
+          title: 'Clicks & conversions', 
+          desc: 'Shifted away from opens as primary'
+        },
+        { 
+          value: 'revenue', 
+          points: 1,
+          title: 'Revenue & lifetime value (LTV) per send', 
+          desc: 'Tracking full-funnel impact',
+          strength: { title: 'Email Metrics', desc: 'You are measuring revenue impact not vanity metrics.' },
+          gapIfNotChosen: {
+            title: 'Email Metrics Gap',
+            desc: 'Open rates became less reliable after privacy changes. Strong teams prioritize clicks conversions and revenue per send.',
+            trend: 'Deliverability is increasingly tied to engagement quality not vanity metrics.'
+          }
+        }
       ]
     },
     {
-      "id": "q2",
-      "category": "Email Personalization",
-      "question": "2. How personalized are your emails?",
-      "options": [
-        { "value": "generic", "points": 0, "title": "Generic sends (minimal segmentation)", "desc": "Same email to most subscribers" },
-        { "value": "segment", "points": 0.5, "title": "Basic segmentation (3–5 groups)", "desc": "Segment by role, company size, or past purchase" },
-        { "value": "behavioral", "points": 1, "title": "Behavioral personalization + automated sequences", "desc": "Recency, engagement depth, LTV, dynamic content and automated journeys", "strength": { "title": "Personalization", "desc": "You use behavioral personalization and automations." } }
+      id: 'q2',
+      category: 'Email Personalization',
+      question: '2. How personalized is your email program?',
+      options: [
+        { 
+          value: 'generic', 
+          points: 0,
+          title: 'Generic sends (minimal segmentation)', 
+          desc: 'Same email to most subscribers'
+        },
+        { 
+          value: 'segment', 
+          points: 0.5,
+          title: 'Basic segmentation (3–5 groups)', 
+          desc: 'Segment by role company size or past purchase'
+        },
+        { 
+          value: 'behavioral', 
+          points: 1,
+          title: 'Behavioral personalization + automated sequences', 
+          desc: 'Recency engagement depth LTV dynamic content and automated journeys',
+          strength: { title: 'Behavioral Personalization', desc: 'Behavioral personalization plus automated sequences puts you near the top tier.' },
+          gapIfNotChosen: {
+            title: 'Personalization Gap',
+            desc: 'Basic segmentation helps but behavior-based personalization + automated sequences is the new baseline for relevance.',
+            trend: 'Expectations have shifted toward lifecycle automation and engagement-based segmentation.'
+          }
+        }
       ]
     },
     {
-      "id": "q3",
-      "category": "Website Intent Capture",
-      "question": "3. When someone hits your site (paid or organic) do you capture intent and follow up if they don't book?",
-      "options": [
-        { "value": "none", "points": 0, "title": "Currently have no tracking system", "desc": "May or may not have an email opt-in, but not using it" },
-        { "value": "leak", "points": 0.25, "title": "We mostly lose them", "desc": "We get traffic but have limited tracking/capture and no consistent follow-up" },
-        { "value": "capture", "points": 0.5, "title": "We capture some intent + do manual follow-up", "desc": "Basic tracking + forms; follow-up happens but it's inconsistent" },
-        { "value": "capture-auto", "points": 1, "title": "We capture intent + run automated follow-up sequences", "desc": "Behavior events (pricing/case study/demo page) trigger email/retargeting follow-up" }
+      id: 'q3',
+      category: 'Website Intent Capture',
+      question: '3. When someone hits your site (paid or organic) do you capture intent and follow up if they don\'t book?',
+      options: [
+        { 
+          value: 'none', 
+          points: 0,
+          title: 'Currently have no tracking system', 
+          desc: 'May or may not have an email opt-in, but not using it'
+        },
+        { 
+          value: 'leak', 
+          points: 0.25,
+          title: 'We mostly lose them', 
+          desc: 'We get traffic but have limited tracking/capture and no consistent follow-up'
+        },
+        { 
+          value: 'capture', 
+          points: 0.5,
+          title: 'We capture some intent + do manual follow-up', 
+          desc: 'Basic tracking + forms; follow-up happens but it\'s inconsistent'
+        },
+        { 
+          value: 'capture-auto', 
+          points: 1,
+          title: 'We capture intent + run automated follow-up sequences', 
+          desc: 'Behavior events (pricing case study demo page) trigger email/retargeting follow-ups for non-bookers',
+          strength: { title: 'Intent Capture + Follow-Up', desc: 'You capture site intent and trigger follow-ups for non-bookers.' },
+          gapIfNotChosen: {
+            title: 'Website Intent Capture Gap',
+            desc: 'If traffic lands and leaves with no capture you are paying for attention without building a follow-up asset.',
+            trend: 'First-party data + intent signals are becoming the core advantage for personalization and timing.'
+          }
+        }
       ]
     },
     {
-      "id": "q4",
-      "category": "Lead Follow-Up System",
-      "question": "4. How do you keep interested leads from slipping through the cracks?",
-      "options": [
-        { "value": "ad-hoc", "points": 0, "title": "Ad-hoc", "desc": "Manual reminders and memory-based follow-up" },
-        { "value": "mapped", "points": 0.5, "title": "Documented but not automated", "desc": "We know the steps but execution is inconsistent" },
-        { "value": "system", "points": 1, "title": "Automated follow-up triggers", "desc": "Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)", "strength": { "title": "Follow-up System", "desc": "You have automated follow-up triggers." } },
-        { "value": "crm", "points": 1, "title": "Rich CRM + behavior-based segmentation", "desc": "We track communications and use behavior-based segmentation" }
+      id: 'q4',
+      category: 'Lead Follow-Up System',
+      question: '4. How do you keep interested leads from slipping through the cracks?',
+      options: [
+        { 
+          value: 'ad-hoc', 
+          points: 0,
+          title: 'Adhoc', 
+          desc: 'Manual reminders and memory-based follow-up'
+        },
+        { 
+          value: 'mapped', 
+          points: 0.5,
+          title: 'Documented but not automated', 
+          desc: 'We know the steps but execution is inconsistent'
+        },
+        { 
+          value: 'system', 
+          points: 1,
+          title: 'Automated follow-up triggers', 
+          desc: 'Behavior triggers sequences (e.g. pricing view → follow-up; demo no-show → reschedule sequence)',
+          strength: { title: 'Follow-Up Triggers', desc: 'You use triggers so interested leads get a timely next step.' },
+          gapIfNotChosen: {
+            title: 'Lead Follow-Up Gap',
+            desc: 'Manual follow-up leads to inconsistent execution missed timing and lost opportunities.',
+            trend: 'Behavior-triggered follow-up systems reduce leakage and improve conversion rates.'
+          }
+        },
+        { 
+          value: 'crm', 
+          points: 1,
+          title: 'We have behavior-based segmentation and track of all of our communications with our clients, customers, and prospects alongside regular touchpoints', 
+          desc: '',
+          strength: { title: 'Follow-Up Triggers', desc: 'You use triggers so interested leads get a timely next step.' },
+          gapIfNotChosen: {
+            title: 'Lead Follow-Up Gap',
+            desc: 'Manual follow-up leads to inconsistent execution missed timing and lost opportunities.',
+            trend: 'Behavior-triggered follow-up systems reduce leakage and improve conversion rates.'
+          }
+        }
       ]
     },
     {
-      "id": "q5",
-      "category": "Retention & LTV",
-      "question": "5. Is your revenue mostly from new or existing clients / customers?",
-      "options": [
-        { "value": "unsure", "points": 0, "title": "Not sure", "desc": "Do not have a system or not actively tracking" },
-        { "value": "acq-heavy", "points": 0.25, "title": "80%+ new 20% or less existing", "desc": "New customers are the main source of revenue" },
-        { "value": "balanced", "points": 0.25, "title": "50/50 split", "desc": "Both generate an equal amount of revenue" },
-        { "value": "ltv-first", "points": 1, "title": "60%+ existing 40% new", "desc": "Customer lifetime value (LTV) and expansion are the growth engine", "strength": { "title": "LTV-First Strategy", "desc": "You prioritize retention and expansion." } }
+      id: 'q5',
+      category: 'Retention & LTV',
+      question: '5. Is your revenue mostly from new or existing clients / customers?',
+      options: [
+        { 
+          value: 'unsure', 
+          points: 0,
+          title: 'Not sure', 
+          desc: 'Do not have a system or not actively tracking'
+        },
+        { 
+          value: 'acq-heavy', 
+          points: 0.25,
+          title: '80%+ new 20% or less existing', 
+          desc: 'New customers are the main source of revenue'
+        },
+        { 
+          value: 'balanced', 
+          points: 0.25,
+          title: '50/50 split', 
+          desc: 'Both generate an equal amount of revenue'
+        },
+        { 
+          value: 'ltv-first', 
+          points: 1,
+          title: '60%+ existing 40% new', 
+          desc: 'Customer lifetime value (LTV) and expansion are the growth engine',
+          strength: { title: 'LTV-First Strategy', desc: 'You treat retention and expansion as core growth.' },
+          gapIfNotChosen: {
+            title: 'LTV & Retention Gap',
+            desc: 'Teams that over-prioritize acquisition often miss compounding growth from retention and expansion.',
+            trend: 'Retention and expansion are increasingly treated as primary growth levers.'
+          }
+        }
       ]
     },
     {
-      "id": "q6",
-      "category": "Owned Distribution",
-      "question": "6. Do you have an owned distribution channel (newsletter, community, audience)?",
-      "options": [
-        { "value": "none", "points": 0, "title": "No", "desc": "Rely on paid reach + outbound" },
-        { "value": "basic", "points": 0.5, "title": "Starting one", "desc": "Early newsletter / early audience building" },
-        { "value": "strong", "points": 1, "title": "Strong owned channel", "desc": "Consistent audience that drives pipeline", "strength": { "title": "Owned Distribution", "desc": "You control a channel that compounds attention." } }
+      id: 'q6',
+      category: 'Owned Distribution',
+      question: '6. Do you have an owned distribution channel (newsletter community audience)?',
+      options: [
+        { 
+          value: 'none', 
+          points: 0,
+          title: 'No', 
+          desc: 'Rely on paid reach + outbound'
+        },
+        { 
+          value: 'basic', 
+          points: 0.5,
+          title: 'Starting one', 
+          desc: 'Early newsletter early audience building'
+        },
+        { 
+          value: 'strong', 
+          points: 1,
+          title: 'Strong owned channel', 
+          desc: 'Consistent audience that drives pipeline',
+          strength: { title: 'Owned Distribution', desc: 'You control a compounding asset that reliably reaches your market.' },
+          gapIfNotChosen: {
+            title: 'Owned Distribution Gap',
+            desc: 'Without an owned channel you depend on paid reach and outbound effort for attention.',
+            trend: 'Owned audiences reduce CAC and create compounding distribution.'
+          }
+        }
       ]
     },
     {
-      "id": "q7",
-      "category": "Distribution Strategy",
-      "question": "7. How do you distribute content and reach prospects?",
-      "options": [
-        { "value": "isolated", "points": 0, "title": "Isolated tactics", "desc": "Email OR ads OR LinkedIn; focused on individual channel strategies" },
-        { "value": "coordinated", "points": 0.5, "title": "Coordinated across 2–3 channels", "desc": "Some synergy but not fully integrated" },
-        { "value": "ecosystem", "points": 1, "title": "Ecosystem strategy (owned + earned + paid)", "desc": "Channels feed each other (content → email → retargeting → conversion)", "strength": { "title": "Ecosystem", "desc": "You have an integrated channel strategy." } }
+      id: 'q7',
+      category: 'Distribution Strategy',
+      question: '7. How do you distribute content and reach prospects?',
+      options: [
+        { 
+          value: 'isolated', 
+          points: 0,
+          title: 'Isolated tactics', 
+          desc: 'Email OR ads OR LinkedIn; focused on individual channel strategies'
+        },
+        { 
+          value: 'coordinated', 
+          points: 0.5,
+          title: 'Coordinated across 2–3 channels', 
+          desc: 'Some synergy but not fully integrated'
+        },
+        { 
+          value: 'ecosystem', 
+          points: 1,
+          title: 'Ecosystem strategy (owned + earned + paid)', 
+          desc: 'Channels feed each other (content → email → retargeting → conversion)',
+          strength: { title: 'Ecosystem Distribution', desc: 'Owned + earned + paid channels are aligned.' },
+          gapIfNotChosen: {
+            title: 'Distribution & Ecosystem Gap',
+            desc: 'Isolated channels underperform integrated ecosystems where channels feed each other.',
+            trend: 'Community and owned distribution increasingly compete with paid reach.'
+          }
+        }
       ]
     },
     {
-      "id": "q8",
-      "category": "Trust & Positioning",
-      "question": "8. How do you build credibility with cold/warm prospects?",
-      "options": [
-        { "value": "pitch", "points": 0, "title": "Product-first", "desc": "Lead with services, features, benefits, and / or pricing" },
-        { "value": "proof", "points": 0.5, "title": "Proof-driven", "desc": "Utilize case studies, results, testimonials to demonstrate expertise" },
-        { "value": "trust", "points": 0.5, "title": "Trust-first, brand-focused", "desc": "Lead with insights and brand awareness" },
-        { "value": "customer-first", "points": 1, "title": "Customer-focused", "desc": "Consistent visible thought leadership, case studies, and education" }
+      id: 'q8',
+      category: 'Trust & Positioning',
+      question: '8. How do you build credibility with cold/warm prospects?',
+      options: [
+        { 
+          value: 'pitch', 
+          points: 0,
+          title: 'Product-first', 
+          desc: 'Lead with services, features, benefits, and / or pricing'
+        },
+        { 
+          value: 'proof', 
+          points: 0.5,
+          title: 'Proof-driven', 
+          desc: 'Utilize case studies, results, testimonials to demonstrate expertise and build credibility'
+        },
+        { 
+          value: 'trust', 
+          points: 0.5,
+          title: 'Trust-first, brand-focused', 
+          desc: 'Lead with insights and brand awareness, building trust through credibility and growing brand presence'
+        },
+        { 
+          value: 'customer-first', 
+          points: 1,
+          title: 'Customer-focused, consistent visible thought leadership, case studies, and education', 
+          desc: 'Established founder and / or executive presence, regularly share education, case studies, and resources based on insights and feedback loops',
+          strength: { title: 'Customer-First, Trust-Focused Positioning', desc: 'You\'re customer focused and insight-driven, regularly building and maintaining relationships with new & existing clients / customers to consistently provide valuable education, resources, and thought leadership.' },
+          gapIfNotChosen: {
+            title: 'Positioning Gap',
+            desc: 'Leading with product details can underperform leading with education, insights, and thought leadership based on the current landscape and regular feedback loops.',
+            trend: 'Trust is increasingly built through building relationships with new and existing clients / customers or prospects, visible founder or executive presence, providing value and education, proof of expertise, and credible distribution with an obvious focus and clear understanding of the customer.'
+          }
+        }
       ]
     }
   ],
@@ -573,43 +766,60 @@ const CONTENT = {
   // Action Plan Rules
   actionPlanRules: [
     {
-      "triggerGaps": ["Email Metrics", "Personalization"],
-      "actions": [
-        { "title": "Shift email KPIs to clicks, conversions and revenue-per-send", "desc": "Keep opens as directional only. Optimize toward revenue impact." },
-        { "title": "Add behavioral segmentation + automated email sequences", "desc": "Build flows for active, at-risk, and dormant segments." }
-      ]
+      triggerGaps: ["Email Metrics", "Personalization"],
+      actions: [{
+        title: "Shift email KPIs to clicks conversions and revenue-per-send",
+        desc: "Keep opens as directional only. Optimize segmentation and offers around outcomes.",
+        priority: "high"
+      }]
     },
     {
-      "triggerGaps": ["Website Intent"],
-      "actions": [
-        { "title": "Capture website intent and follow up with non-bookers", "desc": "Track key events (pricing/demo/case study). Trigger email and retargeting." }
-      ]
+      triggerGaps: ["Email Metrics", "Personalization"],
+      actions: [{
+        title: "Add behavioral segmentation + automated email sequences",
+        desc: "Build flows for active at-risk and dormant segments; trigger sequences from clicks visits and key events.",
+        priority: "medium"
+      }]
     },
     {
-      "triggerGaps": ["Lead Follow-Up"],
-      "actions": [
-        { "title": "Build a simple follow-up trigger system", "desc": "Create rules for no-shows, abandoned booking pages and pricing views." }
-      ]
+      triggerGaps: ["Website Intent"],
+      actions: [{
+        title: "Capture website intent and follow up with non-bookers",
+        desc: "Track key events (pricing demo case studies). Trigger email (and optional retargeting) for visitors who did not book.",
+        priority: "high"
+      }]
     },
     {
-      "triggerGaps": ["LTV"],
-      "actions": [
-        { "title": "Rebalance toward retention and expansion", "desc": "Formalize onboarding, adoption nudges, renewal sequences and expansion offers.", "priority": "high" }
-      ]
+      triggerGaps: ["Lead Follow-Up"],
+      actions: [{
+        title: "Build a simple follow-up trigger system",
+        desc: "Create rules for no-shows abandoned booking pages pricing views and clicked but didn't book outcomes.",
+        priority: "medium"
+      }]
     },
     {
-      "triggerGaps": ["Distribution", "Owned Distribution", "Ecosystem"],
-      "actions": [
-        { "title": "Start or strengthen an owned channel", "desc": "Newsletter or community that compounds attention over time." }
-      ]
+      triggerGaps: ["LTV"],
+      actions: [{
+        title: "Rebalance toward retention and expansion",
+        desc: "Formalize onboarding adoption nudges renewal sequences and expansion offers.",
+        priority: "low"
+      }]
+    },
+    {
+      triggerGaps: ["Distribution", "Owned Distribution", "Ecosystem"],
+      actions: [{
+        title: "Start or strengthen an owned channel",
+        desc: "Newsletter or community that compounds attention and reduces paid dependency.",
+        priority: "low"
+      }]
     }
   ],
 
   // Score Tiers
   scoreTiers: [
-    { minScore: 75, title: "Your strategy is strong. What's your next move?", subtitle: "You're ahead of most. Focus on compounding your advantages.", color: "strong" },
-    { minScore: 50, title: "There's room for improvement", subtitle: "You have a solid foundation. Closing a few gaps could unlock growth.", color: "medium" },
-    { minScore: 0, title: "We should talk", subtitle: "There is untapped leverage and strategic shifts that could materially improve your results.", color: "weak" }
+    { minScore: 75, title: "Your strategy is strong", subtitle: "You're ahead of most. Focus on compounding your advantages.", color: "strong" },
+    { minScore: 50, title: "Moderate Alignment", subtitle: "You have a solid foundation. Closing a few gaps could unlock growth.", color: "medium" },
+    { minScore: 0, title: "You're missing out", subtitle: "There is untapped leverage and strategic shifts that could materially improve your results.", color: "weak" }
   ]
 };
 
@@ -617,396 +827,349 @@ const CONTENT = {
 // 🚫 DON'T EDIT BELOW - AUTO-GENERATED CODE
 // ============================================
 
-;(async function init(){
-  try {
-    const res = await fetch(`./content.json?v=${Date.now()}`, { cache: 'no-store' });
-    if (res.ok) {
-      const external = await res.json();
-      function deepMerge(target, source) {
-        for (const key of Object.keys(source)) {
-          const srcVal = source[key];
-          const tgtVal = target[key];
-          if (srcVal && typeof srcVal === 'object' && !Array.isArray(srcVal) && srcVal !== null) {
-            if (!tgtVal || typeof tgtVal !== 'object' || Array.isArray(tgtVal)) target[key] = {};
-            deepMerge(target[key], srcVal);
-          } else {
-            target[key] = srcVal;
-          }
-        }
-        return target;
-      }
-      deepMerge(CONTENT, external);
-    }
-  } catch (e) {
-    console.warn('No external /content.json loaded, using embedded content');
-  }
+const urlParams = new URLSearchParams(window.location.search);
+const isPreviewMode = urlParams.get('preview') === 'true';
+if (isPreviewMode) {
+  document.getElementById('previewButtons').classList.remove('hidden');
+}
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const isPreviewMode = urlParams.get('preview') === 'true';
-  if (isPreviewMode) {
-    document.getElementById('previewButtons').classList.remove('hidden');
-  }
+document.getElementById('mainHeadline').textContent = CONTENT.headline;
+document.getElementById('mainSubheadline').textContent = CONTENT.subheadline;
+document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle;
+document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle;
+// Results page headline & subheadline (match quiz)
+const resultsHeadlineEl = document.getElementById('resultsHeadline');
+const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
+if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.headline;
+if (resultsSubheadlineEl) resultsSubheadlineEl.textContent = CONTENT.subheadline;
 
-  document.getElementById('mainHeadline').innerHTML = CONTENT.headline || '';
-  document.getElementById('mainSubheadline').innerHTML = CONTENT.subheadline || '';
-  document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle || '';
-  document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle || '';
-
-  const resultsHeadlineEl = document.getElementById('resultsHeadline');
-  const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
-  const resultsHeadlineText = CONTENT.resultsHeadline || CONTENT.headline || '';
-  const resultsSubheadlineText = CONTENT.resultsSubheadline || CONTENT.subheadline || '';
-
-  if (resultsHeadlineEl) resultsHeadlineEl.innerHTML = resultsHeadlineText;
-  if (resultsSubheadlineEl) resultsSubheadlineEl.innerHTML = resultsSubheadlineText;
-
-  const bookingSection = document.querySelector('.booking-section');
-  if (bookingSection && CONTENT.bookingText) {
-    const bookingTextEl = bookingSection.querySelector('.booking-text');
-    if (bookingTextEl) {
-      bookingTextEl.innerHTML = `${CONTENT.bookingText} <a class="booking-link" id="bookingLink" href="${CONTENT.bookingLinkUrl}" target="_blank">${CONTENT.bookingLinkText}</a>`;
-    }
-  }
-
-  const formEl = document.getElementById('auditForm');
-
-  if (Array.isArray(CONTENT.questions)) {
-    formEl.innerHTML = '';
-    CONTENT.questions.forEach(q => {
-      const section = document.createElement('div');
-      section.className = 'section';
-      section.innerHTML = `
-        <h2>${escapeHtml(q.category)}</h2>
-        <p class="question-label">${escapeHtml(q.question)}</p>
-        <div class="options">
-          ${q.options.map((opt, i) => `
-            <div class="option">
-              <input type="radio" name="${escapeAttr(q.id)}" id="${escapeAttr(q.id)}${String.fromCharCode(97+i)}" value="${escapeAttr(opt.value)}" />
-              <label for="${escapeAttr(q.id)}${String.fromCharCode(97+i)}">
-                <p class="label-title">${escapeHtml(opt.title)}</p>
-                <p class="label-desc">${escapeHtml(opt.desc)}</p>
-              </label>
-            </div>
-          `).join('')}
+const formEl = document.getElementById('auditForm');
+CONTENT.questions.forEach(q => {
+  const section = document.createElement('div');
+  section.className = 'section';
+  section.innerHTML = `
+    <h2>${q.category}</h2>
+    <p class="question-label">${q.question}</p>
+    <div class="options">
+      ${q.options.map((opt, i) => `
+        <div class="option">
+          <input type="radio" name="${q.id}" id="${q.id}${String.fromCharCode(97+i)}" value="${opt.value}" />
+          <label for="${q.id}${String.fromCharCode(97+i)}">
+            <p class="label-title">${opt.title}</p>
+            <p class="label-desc">${opt.desc}</p>
+          </label>
         </div>
-      `;
-      formEl.appendChild(section);
-    });
-  } else {
-    formEl.innerHTML = '<p>No questions found in CONTENT.questions</p>';
-  }
+      `).join('')}
+    </div>
+  `;
+  formEl.appendChild(section);
+});
 
-  let currentResult = null;
-  let currentAnswers = null;
+let currentResult = null;
+let currentAnswers = null;
 
-  function syncSelectedStates() {
-    document.querySelectorAll('.option').forEach((opt) => {
-      const radio = opt.querySelector('input[type="radio"]');
-      if (!radio) return;
-      opt.classList.toggle('is-selected', radio.checked);
-    });
-  }
-
-  formEl.addEventListener('click', (e) => {
-    const opt = e.target.closest('.option');
-    if (!opt || !formEl.contains(opt)) return;
+function syncSelectedStates() {
+  document.querySelectorAll('.option').forEach((opt) => {
     const radio = opt.querySelector('input[type="radio"]');
-    if (radio && !radio.checked) {
-      radio.checked = true;
-      radio.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+    if (!radio) return;
+    opt.classList.toggle('is-selected', radio.checked);
   });
+}
 
-  formEl.addEventListener('change', () => {
-    syncSelectedStates();
-    updateProgress();
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    syncSelectedStates();
-  });
-
-  function updateProgress() {
-    const answers = new FormData(formEl);
-    const total = Array.isArray(CONTENT.questions) ? CONTENT.questions.length : 0;
-    let count = 0;
-    if (Array.isArray(CONTENT.questions)) {
-      CONTENT.questions.forEach(q => {
-        if (answers.get(q.id)) count++;
-      });
-    }
-    const percent = total === 0 ? 0 : (count / total) * 100;
-    document.getElementById('progressFill').style.width = `${percent}%`;
+formEl.addEventListener('click', (e) => {
+  const opt = e.target.closest('.option');
+  if (!opt || !formEl.contains(opt)) return;
+  const radio = opt.querySelector('input[type="radio"]');
+  if (radio && !radio.checked) {
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
   }
+});
 
-  formEl.addEventListener('submit', function(e) {
-    e.preventDefault();
-    calculateScore();
+formEl.addEventListener('change', () => {
+  syncSelectedStates();
+  updateProgress();
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  syncSelectedStates();
+});
+
+function updateProgress() {
+  const answers = new FormData(formEl);
+  const total = CONTENT.questions.length;
+  let count = 0;
+  CONTENT.questions.forEach(q => {
+    if (answers.get(q.id)) count++;
   });
+  const percent = (count / total) * 100;
+  document.getElementById('progressFill').style.width = `${percent}%`;
+}
 
-  function calculateScore() {
-    const answers = {};
-    const formData = new FormData(formEl);
-    for (let [key, value] of formData.entries()) {
-      answers[key] = value;
-    }
-    if (Array.isArray(CONTENT.questions) && Object.keys(answers).length < CONTENT.questions.length) {
-      alert(`Please answer all ${CONTENT.questions.length} questions`);
-      return;
-    }
-    const result = scoreAnswers(answers);
-    currentResult = result;
-    currentAnswers = answers;
-    showEmailGate(result.score);
+formEl.addEventListener('submit', function(e) {
+  e.preventDefault();
+  calculateScore();
+});
+
+function calculateScore() {
+  const answers = {};
+  const formData = new FormData(formEl);
+  for (let [key, value] of formData.entries()) {
+    answers[key] = value;
   }
-
-  function showEmailGate(score) {
-    updatePreviewScoreDisplay(score);
-    document.getElementById('emailGate').classList.remove('hidden');
-    document.getElementById('progressFill').style.width = '100%';
+  if (Object.keys(answers).length < CONTENT.questions.length) {
+    alert(`Please answer all ${CONTENT.questions.length} questions`);
+    return;
   }
+  const result = scoreAnswers(answers);
+  currentResult = result;
+  currentAnswers = answers;
+  showEmailGate(result.score);
+}
 
-  document.getElementById('emailForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('userEmail').value;
-    const submitBtn = document.getElementById('submitEmail');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
-    try {
-      await sendToConvertKit(email, currentAnswers, currentResult);
-      document.getElementById('emailGate').classList.add('hidden');
-      displayResults(currentResult, currentAnswers);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('There was an error. Please try again.');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Get My Results';
-    }
-  });
+function showEmailGate(score) {
+  document.getElementById('previewScore').textContent = `${score}%`;
+  document.getElementById('emailGate').classList.remove('hidden');
+  document.getElementById('progressFill').style.width = '100%';
+}
 
-  async function sendToConvertKit(email, answers, result) {
-    const url = `https://api.convertkit.com/v3/forms/${CONTENT.convertKitFormId}/subscribe`;
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          api_key: CONTENT.convertKitApiKey,
-          email: email,
-          fields: {
-            score: result.score,
-            gaps: result.gaps.map(g => g.title).join(', '),
-            strengths: result.strengths.map(s => s.title).join(', ')
-          }
-        })
-      });
-      if (!response.ok) {
-        console.warn('ConvertKit API returned non-OK:', response.status, response.statusText);
-        return { status: 'simulated', success: true };
-      }
-      return response.json();
-    } catch (err) {
-      console.warn('ConvertKit fetch failed, falling back to simulated success.', err);
+document.getElementById('emailForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('userEmail').value;
+  const submitBtn = document.getElementById('submitEmail');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  try {
+    await sendToConvertKit(email, currentAnswers, currentResult);
+    document.getElementById('emailGate').classList.add('hidden');
+    displayResults(currentResult, currentAnswers);
+  } catch (error) {
+    console.error('Error:', error);
+    alert('There was an error. Please try again.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Get My Results';
+  }
+});
+
+async function sendToConvertKit(email, answers, result) {
+  const url = `https://api.convertkit.com/v3/forms/${CONTENT.convertKitFormId}/subscribe`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: CONTENT.convertKitApiKey,
+        email: email,
+        fields: {
+          score: result.score,
+          gaps: result.gaps.map(g => g.title).join(', '),
+          strengths: result.strengths.map(s => s.title).join(', ')
+        }
+      })
+    });
+    if (!response.ok) {
+      console.warn('ConvertKit API returned non-OK:', response.status, response.statusText);
       return { status: 'simulated', success: true };
     }
+    return response.json();
+  } catch (err) {
+    console.warn('ConvertKit fetch failed, falling back to simulated success.', err);
+    return { status: 'simulated', success: true };
   }
+}
 
-  function escapeHtml(str) {
-    if (str == null) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-  function escapeAttr(str) {
-    return escapeHtml(str).replace(/"/g, '&quot;');
-  }
+function scoreAnswers(answers) {
+  let score = 0;
+  const gaps = [];
+  const strengths = [];
 
-  function scoreAnswers(answers) {
-    const gaps = [];
-    const strengths = [];
-    let total = 0;
-    let possible = 0;
-    if (Array.isArray(CONTENT.questions)) {
-      CONTENT.questions.forEach(q => {
-        const chosen = answers[q.id];
-        const opt = (q.options || []).find(o => o.value === chosen);
-        const pts = opt ? (opt.points || 0) : 0;
-        total += pts;
-        possible += 1;
-        if (opt && opt.strength) strengths.push(opt.strength);
-        (q.options || []).forEach(o => {
-          if (o.gapIfNotChosen && (!opt || o.value !== opt.value) && (o.points && o.points > (opt ? opt.points : 0))) {
-            gaps.push(o.gapIfNotChosen);
-          }
-        });
-      });
-    }
-    const score = possible === 0 ? 0 : Math.round((total / possible) * 100);
-    let tier = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
-    return { score, gaps, strengths, tier };
-  }
-
-  function updateScoreDisplay(score, targetElId = 'scoreNumber') {
-    const el = document.getElementById(targetElId);
-    if (!el) return;
-    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
-    const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
-    el.textContent = `${score}%`;
-    el.classList.remove('strong','medium','weak');
-    const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
-    el.classList.add(colorClass);
-  }
-
-  function updatePreviewScoreDisplay(score) {
-    const el = document.getElementById('previewScore');
-    if (!el) return;
-    el.textContent = `${score}%`;
-    el.classList.remove('strong','medium','weak');
-    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
-    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
-    el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
-  }
-
-  function displayResults(result, answers) {
-    document.getElementById('resultsSection').classList.remove('hidden');
-    document.getElementById('auditSection').classList.add('hidden');
-
-    updateScoreDisplay(result.score, 'scoreNumber');
-
-    const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
-    if (tier) {
-      const titleEl = document.getElementById('resultTitle');
-      const subtitleEl = document.getElementById('resultSubtitle');
-      if (titleEl) titleEl.textContent = tier.title || '';
-      if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
-    }
-
-    const contentEl = document.getElementById('resultsContent');
-    contentEl.innerHTML = '';
-
-    if (result.gaps && result.gaps.length) {
-      const gapsWrap = document.createElement('div');
-      gapsWrap.className = 'unified-gap-card';
-      gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
-      result.gaps.forEach(g => {
-        const div = document.createElement('div');
-        div.className = 'gap-section';
-        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
-        gapsWrap.appendChild(div);
-      });
-      contentEl.appendChild(gapsWrap);
-    }
-
-    const actionsWrap = document.createElement('div');
-    actionsWrap.className = 'actions-section';
-    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
-    const list = document.createElement('div');
-    list.className = 'action-items';
-    (CONTENT.actionPlanRules || []).forEach(rule => {
-      if (!rule.triggerGaps || !rule.actions) return;
-      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
-      if (!triggersMatched) {
-        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
-        if (!fallbackMatch) return;
+  CONTENT.questions.forEach(q => {
+    const selectedValue = answers[q.id];
+    const selectedOption = q.options.find(opt => opt.value === selectedValue);
+    
+    if (selectedOption) {
+      score += selectedOption.points;
+      
+      if (selectedOption.strength) {
+        strengths.push(selectedOption.strength);
       }
+      
+      const bestOption = q.options.reduce((best, opt) => 
+        opt.points > best.points ? opt : best
+      );
+      
+      if (selectedOption.value !== bestOption.value && bestOption.gapIfNotChosen) {
+        gaps.push(bestOption.gapIfNotChosen);
+      }
+    }
+  });
 
-      rule.actions.forEach(a => {
-        const ai = document.createElement('div');
-        ai.className = 'action-item';
-        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
-        ai.innerHTML = `
-          <div class="action-content">
-            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
-            <h4>${escapeHtml(a.title || '')}</h4>
-            <p>${escapeHtml(a.desc || '')}</p>
-          </div>
-        `;
-        list.appendChild(ai);
-      });
+  const maxScore = CONTENT.questions.length;
+  const percentScore = Math.round((score / maxScore) * 100);
+  
+  return { score: percentScore, gaps, strengths };
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function displayResults(result, answers) {
+  document.getElementById('resultsSection').classList.remove('hidden');
+  document.getElementById('auditSection').classList.add('hidden');
+
+  updateScoreDisplay(result.score, 'scoreNumber');
+
+  const tier = result.tier || ((CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore).find(t => result.score >= t.minScore) || CONTENT.scoreTiers[CONTENT.scoreTiers.length-1]);
+  if (tier) {
+    const titleEl = document.getElementById('resultTitle');
+    const subtitleEl = document.getElementById('resultSubtitle');
+    if (titleEl) titleEl.textContent = tier.title || '';
+    if (subtitleEl) subtitleEl.textContent = tier.subtitle || '';
+  }
+
+  const contentEl = document.getElementById('resultsContent');
+  contentEl.innerHTML = '';
+
+  if (result.gaps && result.gaps.length) {
+    const gapsWrap = document.createElement('div');
+    gapsWrap.className = 'unified-gap-card';
+    gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
+    result.gaps.forEach(g => {
+      const div = document.createElement('div');
+      div.className = 'gap-section';
+      div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+      gapsWrap.appendChild(div);
     });
+    contentEl.appendChild(gapsWrap);
+  }
 
-    if (list.children.length) {
-      actionsWrap.appendChild(list);
-      contentEl.appendChild(actionsWrap);
-    } else {
-      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
-      contentEl.appendChild(actionsWrap);
+  const actionsWrap = document.createElement('div');
+  actionsWrap.className = 'actions-section';
+  actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
+  const list = document.createElement('div');
+  list.className = 'action-items';
+  (CONTENT.actionPlanRules || []).forEach(rule => {
+    if (!rule.triggerGaps || !rule.actions) return;
+    const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
+    if (!triggersMatched) {
+      const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
+      if (!fallbackMatch) return;
     }
 
-    const bookingLinkEl = document.getElementById('bookingLink');
-    if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
-  }
-
-  // --------------------------
-  // PREVIEW: full-result previews
-  // --------------------------
-  // These functions synthesize a demo result object using the live CONTENT
-  // so preview buttons always reflect the current actionPlanRules and questions.
-  function buildDemoResult(score) {
-    const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
-    const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
-
-    // Collect trigger keywords from actionPlanRules so recommended actions render dynamically
-    const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
-    // Choose triggers depending on score to ensure actions appear
-    let pickedTriggers = [];
-    if (score < 50) pickedTriggers = allTriggers.slice(0, 2);   // low: multiple gaps
-    else if (score < 75) pickedTriggers = allTriggers.slice(0, 1); // mid: one focused gap
-    else pickedTriggers = []; // high: no gaps
-
-    const gaps = pickedTriggers.map(t => ({ title: t, desc: `Demo gap: ${t} — consider improving this area.` }));
-
-    // Pull up to two strengths from question options that define a `strength` field
-    const strengths = [];
-    (CONTENT.questions || []).forEach(q => {
-      (q.options || []).forEach(o => {
-        if (o.strength && strengths.length < 2) strengths.push(o.strength);
-      });
+    rule.actions.forEach(a => {
+      const ai = document.createElement('div');
+      ai.className = 'action-item';
+      const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
+      ai.innerHTML = `
+        <div class="action-content">
+          <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
+          <h4>${escapeHtml(a.title || '')}</h4>
+          <p>${escapeHtml(a.desc || '')}</p>
+        </div>
+      `;
+      list.appendChild(ai);
     });
+  });
 
-    return { score, gaps, strengths, tier };
+  if (list.children.length) {
+    actionsWrap.appendChild(list);
+    contentEl.appendChild(actionsWrap);
+  } else {
+    actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
+    contentEl.appendChild(actionsWrap);
   }
 
-  function showDemoResult(score) {
-    // Hide email gate if visible
-    const eg = document.getElementById('emailGate'); if (eg) eg.classList.add('hidden');
-    // Make progress bar full
-    const pf = document.getElementById('progressFill'); if (pf) pf.style.width = '100%';
+  const bookingLinkEl = document.getElementById('bookingLink');
+  if (bookingLinkEl && CONTENT.bookingLinkUrl) bookingLinkEl.href = CONTENT.bookingLinkUrl;
+}
 
-    const demo = buildDemoResult(score);
+function buildDemoResult(score) {
+  const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+  const tier = tiers.find(t => score >= t.minScore) || { color: 'weak', title: '', subtitle: '' };
 
-    // Use existing renderer so UI, actions and tiers come from CONTENT
-    if (typeof displayResults === 'function') {
-      displayResults(demo, {});
-      updateScoreDisplay(demo.score, 'scoreNumber');
-    } else {
-      // Fallback: update preview score in email gate
-      updatePreviewScoreDisplay(score);
-      document.getElementById('emailGate').classList.remove('hidden');
-    }
+  const allTriggers = (CONTENT.actionPlanRules || []).flatMap(rule => rule.triggerGaps || []);
+  let pickedTriggers = [];
+  if (score < 50) pickedTriggers = allTriggers.slice(0, 2);
+  else if (score < 75) pickedTriggers = allTriggers.slice(0, 1);
+  else pickedTriggers = [];
+
+  const gaps = pickedTriggers.map(t => ({ title: t, desc: `Demo gap: ${t} — consider improving this area.` }));
+
+  const strengths = [];
+  (CONTENT.questions || []).forEach(q => {
+    (q.options || []).forEach(o => {
+      if (o.strength && strengths.length < 2) strengths.push(o.strength);
+    });
+  });
+
+  return { score, gaps, strengths, tier };
+}
+
+function showDemoResult(score) {
+  const eg = document.getElementById('emailGate'); if (eg) eg.classList.add('hidden');
+  const pf = document.getElementById('progressFill'); if (pf) pf.style.width = '100%';
+
+  const demo = buildDemoResult(score);
+
+  if (typeof displayResults === 'function') {
+    displayResults(demo, {});
+    updateScoreDisplay(demo.score, 'scoreNumber');
+  } else {
+    updatePreviewScoreDisplay(score);
+    document.getElementById('emailGate').classList.remove('hidden');
   }
+}
 
-  window.previewLow  = function() { showDemoResult(32); };
-  window.previewMid  = function() { showDemoResult(62); };
-  window.previewHigh = function() { showDemoResult(88); };
+window.previewLow  = function() { showDemoResult(32); };
+window.previewMid  = function() { showDemoResult(62); };
+window.previewHigh = function() { showDemoResult(88); };
 
-  window.backToQuiz = function() {
-    document.getElementById('resultsSection').classList.add('hidden');
-    document.getElementById('auditSection').classList.remove('hidden');
-  };
+function updateScoreDisplay(score, targetElId = 'scoreNumber') {
+  const el = document.getElementById(targetElId);
+  if (!el) return;
+  const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+  const tier = tiers.find(t => score >= t.minScore) || tiers[tiers.length - 1] || { color: 'weak' };
+  el.textContent = `${score}%`;
+  el.classList.remove('strong','medium','weak');
+  const colorClass = tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak'));
+  el.classList.add(colorClass);
+}
 
-  window.downloadPDF = function() {
-    alert('Download not implemented in this demo.');
-  };
+function updatePreviewScoreDisplay(score) {
+  const el = document.getElementById('previewScore');
+  if (!el) return;
+  el.textContent = `${score}%`;
+  el.classList.remove('strong','medium','weak');
+  const tiers = (CONTENT.scoreTiers || []).slice().sort((a,b)=>b.minScore-a.minScore);
+  const tier = tiers.find(t => score >= t.minScore) || { color: 'weak' };
+  el.classList.add(tier.color || (score >= 75 ? 'strong' : (score >= 50 ? 'medium' : 'weak')));
+}
 
-  window.resetAudit = function() {
-    window.location.reload();
-  };
+function backToQuiz() {
+  document.getElementById('resultsSection').classList.add('hidden');
+  document.getElementById('auditSection').classList.remove('hidden');
+}
 
-})(); 
+function downloadPDF() {
+  window.print();
+}
+
+function resetAudit() {
+  formEl.reset();
+  document.getElementById('auditSection').classList.remove('hidden');
+  document.getElementById('resultsSection').classList.add('hidden');
+  document.getElementById('emailGate').classList.add('hidden');
+  document.getElementById('progressFill').style.width = '0%';
+  currentResult = null;
+  currentAnswers = null;
+  window.scrollTo(0, 0);
+}
   </script>
 </body>
 </html>
