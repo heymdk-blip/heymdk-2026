@@ -49,7 +49,26 @@ npm run dev
 
 3. Test the audit flow and results. `index-FIXED.html` shallow-merges `content.json` over the embedded defaults, so you can update only the parts you need.
 
+Preview Mode (Results Pages):
+
+To preview what the results pages look like with different scores (high, mid, low) including gaps and recommended actions:
+
+1. Start the dev server: `npm run dev`
+2. Open http://localhost:8000/index.html?preview=true in your browser
+3. Use the preview buttons at the top:
+   - **Low Score Preview (0%)** - Shows all detected gaps with comprehensive action plan
+   - **Mid Score Preview (44%)** - Shows top 3 gaps with focused actions
+   - **High Score Preview (100%)** - Shows success state with no gaps
+4. Click **Back to Quiz** to return to the assessment
+
+This is useful for:
+- Previewing how different score ranges display gaps and actions
+- Testing content changes to gaps, actions, and score tier messaging
+- Demo purposes and stakeholder reviews
+
 Notes & tips:
 - Keep the JSON structure valid. Use a JSON-aware editor or VS Code's JSON mode to avoid trailing commas.
 - For large edits (multiple questions), copy the existing question objects from the HTML's embedded `CONTENT` into `content.json` and modify.
-- If you want a programmatic editor, I can add a small Node.js script or a tiny local web editor that writes `content.json` for you.
+- Preview mode works with both `index.html` and `index-FIXED.html`
+- Gap definitions in `content.json` must include `title`, `desc`, and `trend` fields
+- Action plan rules in `content.json` are matched against gap titles using substring matching
