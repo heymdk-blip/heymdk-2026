@@ -53,13 +53,21 @@ Preview Mode (Results Pages):
 
 To preview what the results pages look like with different scores (high, mid, low) including gaps and recommended actions:
 
+**For Developers/Admins:**
+
 1. Start the dev server: `npm run dev`
-2. Open http://localhost:8000/index.html?preview=true in your browser
-3. Use the preview buttons at the top:
+2. Open http://localhost:8000/index.html?dev=true in your browser
+3. Click the "Preview Results Mode →" link at the bottom of the page
+4. Use the preview buttons at the top:
    - **Low Score Preview (0%)** - Shows all detected gaps with comprehensive action plan
    - **Mid Score Preview (44%)** - Shows top 3 gaps with focused actions
    - **High Score Preview (100%)** - Shows success state with no gaps
-4. Click **Back to Quiz** to return to the assessment
+5. Click **Back to Quiz** to return to the assessment
+
+**Direct Access:**
+You can also go directly to preview mode: http://localhost:8000/index.html?preview=true
+
+**Note:** The preview link is hidden from regular users and only visible when `?dev=true` is in the URL. This keeps the preview functionality available for development/testing without exposing it to end users.
 
 This is useful for:
 - Previewing how different score ranges display gaps and actions

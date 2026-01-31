@@ -385,6 +385,11 @@
       padding: 40px 20px 20px;
       margin-top: 60px;
       border-top: 1px solid var(--color-border);
+      display: none; /* Hidden by default, shown only in dev mode */
+    }
+    
+    .page-footer.dev-mode {
+      display: block;
     }
     
     .page-footer a {
@@ -878,6 +883,13 @@ const CONTENT = {
   const isPreviewMode = urlParams.get('preview') === 'true';
   if (isPreviewMode) {
     document.getElementById('previewButtons').classList.remove('hidden');
+  }
+  
+  // Show preview mode link only in dev mode
+  const isDevMode = urlParams.get('dev') === 'true';
+  if (isDevMode) {
+    const footer = document.querySelector('.page-footer');
+    if (footer) footer.classList.add('dev-mode');
   }
 
   document.getElementById('mainHeadline').textContent = CONTENT.headline;
