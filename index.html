@@ -379,6 +379,25 @@
     .retake-section {
       text-align: center;
     }
+    
+    .page-footer {
+      text-align: center;
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      border-top: 1px solid var(--color-border);
+    }
+    
+    .page-footer a {
+      color: var(--color-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+    
+    .page-footer a:hover {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
 
     /* Fix: ensure preview and result score colors are applied consistently */
     .score-number.strong { color: var(--color-success) !important; }
@@ -460,6 +479,10 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="page-footer">
+    <a href="?preview=true">Preview Results Mode →</a>
   </div>
 
   <script>
