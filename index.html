@@ -305,6 +305,28 @@
     .gap-section {
       margin-bottom: 20px;
     }
+    .priority-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .priority-high {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    .priority-medium {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .priority-low {
+      background-color: #e0e7ff;
+      color: #3730a3;
+    }
     .actions-section {
       padding: 16px;
       margin-top: 16px;
@@ -379,6 +401,30 @@
     .retake-section {
       text-align: center;
     }
+    
+    .page-footer {
+      text-align: center;
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      border-top: 1px solid var(--color-border);
+      display: none; /* Hidden by default, shown only in dev mode */
+    }
+    
+    .page-footer.dev-mode {
+      display: block;
+    }
+    
+    .page-footer a {
+      color: var(--color-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+    
+    .page-footer a:hover {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
 
     /* Fix: ensure preview and result score colors are applied consistently */
     .score-number.strong { color: var(--color-success) !important; }
@@ -403,6 +449,7 @@
       <button class="btn btn-secondary" onclick="previewLow()">Low Score Preview</button>
       <button class="btn btn-secondary" onclick="previewMid()">Mid Score Preview</button>
       <button class="btn btn-secondary" onclick="previewHigh()">High Score Preview</button>
+      <button class="btn btn-secondary" onclick="window.location.href='editor.html'">Open Editor</button>
       <button class="btn btn-primary" onclick="backToQuiz()">Back to Quiz</button>
     </div>
   </div>
@@ -462,6 +509,10 @@
     </div>
   </div>
 
+  <div class="page-footer">
+    <a href="?preview=true">Preview Results Mode →</a>
+  </div>
+
   <script>
 // ============================================
 // 📝 EDIT ALL CONTENT HERE - NOTHING ELSE!
@@ -519,7 +570,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Email Metrics Gap',
             desc: 'Open rates became less reliable after privacy changes. Strong teams prioritize clicks conversions and revenue per send.',
-            trend: 'Deliverability is increasingly tied to engagement quality not vanity metrics.'
+            trend: 'Deliverability is increasingly tied to engagement quality not vanity metrics.',
+            priority: 'high'
           }
         }
       ]
@@ -550,7 +602,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Personalization Gap',
             desc: 'Basic segmentation helps but behavior-based personalization + automated sequences is the new baseline for relevance.',
-            trend: 'Expectations have shifted toward lifecycle automation and engagement-based segmentation.'
+            trend: 'Expectations have shifted toward lifecycle automation and engagement-based segmentation.',
+            priority: 'high'
           }
         }
       ]
@@ -587,7 +640,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Website Intent Capture Gap',
             desc: 'If traffic lands and leaves with no capture you are paying for attention without building a follow-up asset.',
-            trend: 'First-party data + intent signals are becoming the core advantage for personalization and timing.'
+            trend: 'First-party data + intent signals are becoming the core advantage for personalization and timing.',
+            priority: 'high'
           }
         }
       ]
@@ -618,7 +672,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Lead Follow-Up Gap',
             desc: 'Manual follow-up leads to inconsistent execution missed timing and lost opportunities.',
-            trend: 'Behavior-triggered follow-up systems reduce leakage and improve conversion rates.'
+            trend: 'Behavior-triggered follow-up systems reduce leakage and improve conversion rates.',
+            priority: 'medium'
           }
         },
         { 
@@ -630,7 +685,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Lead Follow-Up Gap',
             desc: 'Manual follow-up leads to inconsistent execution missed timing and lost opportunities.',
-            trend: 'Behavior-triggered follow-up systems reduce leakage and improve conversion rates.'
+            trend: 'Behavior-triggered follow-up systems reduce leakage and improve conversion rates.',
+            priority: 'medium'
           }
         }
       ]
@@ -667,7 +723,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'LTV & Retention Gap',
             desc: 'Teams that over-prioritize acquisition often miss compounding growth from retention and expansion.',
-            trend: 'Retention and expansion are increasingly treated as primary growth levers.'
+            trend: 'Retention and expansion are increasingly treated as primary growth levers.',
+            priority: 'low'
           }
         }
       ]
@@ -698,7 +755,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Owned Distribution Gap',
             desc: 'Without an owned channel you depend on paid reach and outbound effort for attention.',
-            trend: 'Owned audiences reduce CAC and create compounding distribution.'
+            trend: 'Owned audiences reduce CAC and create compounding distribution.',
+            priority: 'medium'
           }
         }
       ]
@@ -729,7 +787,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Distribution & Ecosystem Gap',
             desc: 'Isolated channels underperform integrated ecosystems where channels feed each other.',
-            trend: 'Community and owned distribution increasingly compete with paid reach.'
+            trend: 'Community and owned distribution increasingly compete with paid reach.',
+            priority: 'medium'
           }
         }
       ]
@@ -766,7 +825,8 @@ const CONTENT = {
           gapIfNotChosen: {
             title: 'Positioning Gap',
             desc: 'Leading with product details can underperform leading with education, insights, and thought leadership based on the current landscape and regular feedback loops.',
-            trend: 'Trust is increasingly built through building relationships with new and existing clients / customers or prospects, visible founder or executive presence, providing value and education, proof of expertise, and credible distribution with an obvious focus and clear understanding of the customer.'
+            trend: 'Trust is increasingly built through building relationships with new and existing clients / customers or prospects, visible founder or executive presence, providing value and education, proof of expertise, and credible distribution with an obvious focus and clear understanding of the customer.',
+            priority: 'low'
           }
         }
       ]
@@ -828,7 +888,7 @@ const CONTENT = {
   // Score Tiers
   scoreTiers: [
     { minScore: 75, title: "Your strategy is strong", subtitle: "You're ahead of most. Focus on compounding your advantages.", color: "strong" },
-    { minScore: 50, title: "Moderate Alignment", subtitle: "You have a solid foundation. Closing a few gaps could unlock growth.", color: "medium" },
+    { minScore: 50, title: "There's room for improvement", subtitle: "You have a solid foundation. Closing a few gaps could unlock growth.", color: "medium" },
     { minScore: 0, title: "You're missing out", subtitle: "There is untapped leverage and strategic shifts that could materially improve your results.", color: "weak" }
   ]
 };
@@ -855,6 +915,13 @@ const CONTENT = {
   const isPreviewMode = urlParams.get('preview') === 'true';
   if (isPreviewMode) {
     document.getElementById('previewButtons').classList.remove('hidden');
+  }
+  
+  // Show preview mode link only in dev mode
+  const isDevMode = urlParams.get('dev') === 'true';
+  if (isDevMode) {
+    const footer = document.querySelector('.page-footer');
+    if (footer) footer.classList.add('dev-mode');
   }
 
   document.getElementById('mainHeadline').textContent = CONTENT.headline;
@@ -1072,11 +1139,20 @@ const CONTENT = {
     if (result.gaps && result.gaps.length) {
       const gapsWrap = document.createElement('div');
       gapsWrap.className = 'unified-gap-card';
-      gapsWrap.innerHTML = `<h3>Gaps detected</h3>`;
+      gapsWrap.innerHTML = `<h3>Priority Gaps & Next Steps</h3>`;
       result.gaps.forEach(g => {
         const div = document.createElement('div');
         div.className = 'gap-section';
-        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        
+        // Add priority badge
+        let priorityBadge = '';
+        if (g.priority) {
+          const priorityClass = g.priority.toLowerCase();
+          const priorityText = g.priority.charAt(0).toUpperCase() + g.priority.slice(1) + ' Priority';
+          priorityBadge = `<div class="priority-badge priority-${priorityClass}">${priorityText}</div>`;
+        }
+        
+        div.innerHTML = priorityBadge + `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
         if (g.trend) {
           div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
         }
@@ -1084,7 +1160,7 @@ const CONTENT = {
         if (g.quickActions && Array.isArray(g.quickActions)) {
           const qa = document.createElement('div');
           qa.className = 'actions-section';
-          qa.innerHTML = '<div class="actions-label">Quick actions</div>';
+          qa.innerHTML = '<div class="actions-label">QUICK ACTIONS</div>';
           g.quickActions.forEach(a => {
             const p = document.createElement('div');
             p.className = 'action-bullet';
@@ -1200,7 +1276,7 @@ const CONTENT = {
 
   // Use the specific screenshot numbers
   window.previewLow  = function() { showDemoResult(0); };
-  window.previewMid  = function() { showDemoResult(44); };
+  window.previewMid  = function() { showDemoResult(62); };
   window.previewHigh = function() { showDemoResult(100); };
 
   function updateScoreDisplay(score, targetElId = 'scoreNumber') {
