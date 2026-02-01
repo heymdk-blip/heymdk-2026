@@ -134,6 +134,6 @@
     { "minScore": 50, "title": "There's room for improvement", "subtitle": "You have a solid foundation. Closing a few gaps could unlock growth.", "color": "medium" },
     { "minScore": 0, "title": "You're missing out", "subtitle": "There is untapped leverage and strategic shifts that could materially improve your results.", "color": "weak" }
   ],
-  "resultsHeadline": "Your Results — Priorities & Gaps",
-  "resultsSubheadline": "<strong>2026 Reality:</strong> Deliverability is increasingly tied to engagement quality not vanity metrics."
+  "resultsHeadline": "Here's Your Personalized Breakdown",
+  "resultsSubheadline": ""
 }
