@@ -301,6 +301,19 @@
       margin-bottom: 16px;
       border-radius: var(--radius-item);
       border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+    }
+    .unified-gap-card strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--color-text);
+    }
+    .unified-gap-card p {
+      margin-bottom: 8px;
+      color: var(--color-muted);
+      line-height: 1.6;
     }
     .gap-section {
       margin-bottom: 20px;
@@ -313,7 +326,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .priority-high {
       background-color: #fee2e2;
@@ -1183,9 +1196,12 @@ const CONTENT = {
 
     // MID SCORE: Show "Priority Gaps & Next Steps" with badges + nested QUICK ACTIONS (same as low score)
     if (isMidScore && result.gaps && result.gaps.length) {
-      const gapsWrap = document.createElement('div');
-      gapsWrap.className = 'chapter-card';
-      gapsWrap.innerHTML = `<h3 class="section-title">Priority Gaps & Next Steps</h3>`;
+      // Plain section title (not inside a card)
+      const titleEl = document.createElement('h3');
+      titleEl.className = 'section-title';
+      titleEl.style.marginBottom = '20px';
+      titleEl.textContent = 'Priority Gaps & Next Steps';
+      contentEl.appendChild(titleEl);
       
       // Sort gaps by priority (high → medium → low)
       const sortedGaps = sortGapsByPriority(result.gaps);
@@ -1221,16 +1237,18 @@ const CONTENT = {
           div.appendChild(qa);
         }
         
-        gapsWrap.appendChild(div);
+        contentEl.appendChild(div);
       });
-      contentEl.appendChild(gapsWrap);
     }
 
     // LOW SCORE: Show "Priority Gaps & Next Steps" with badges + nested QUICK ACTIONS
     if (isLowScore && result.gaps && result.gaps.length) {
-      const gapsWrap = document.createElement('div');
-      gapsWrap.className = 'chapter-card';
-      gapsWrap.innerHTML = `<h3 class="section-title">Priority Gaps & Next Steps</h3>`;
+      // Plain section title (not inside a card)
+      const titleEl = document.createElement('h3');
+      titleEl.className = 'section-title';
+      titleEl.style.marginBottom = '20px';
+      titleEl.textContent = 'Priority Gaps & Next Steps';
+      contentEl.appendChild(titleEl);
       
       // Sort gaps by priority (high → medium → low)
       const sortedGaps = sortGapsByPriority(result.gaps);
@@ -1266,9 +1284,8 @@ const CONTENT = {
           div.appendChild(qa);
         }
         
-        gapsWrap.appendChild(div);
+        contentEl.appendChild(div);
       });
-      contentEl.appendChild(gapsWrap);
     }
 
     const bookingLinkEl = document.getElementById('bookingLink');
