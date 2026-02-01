@@ -130,7 +130,7 @@
     }
   ],
   "scoreTiers": [
-    { "minScore": 75, "title": "Your strategy is strong", "subtitle": "You're ahead of most. Focus on compounding your advantages.", "color": "strong" },
+    { "minScore": 75, "title": "Your strategy is strong. What's your next move?", "subtitle": "You're ahead of most. Focus on compounding your advantages.", "color": "strong" },
     { "minScore": 50, "title": "There's room for improvement", "subtitle": "You have a solid foundation. Closing a few gaps could unlock growth.", "color": "medium" },
     { "minScore": 0, "title": "You're missing out", "subtitle": "There is untapped leverage and strategic shifts that could materially improve your results.", "color": "weak" }
   ],
