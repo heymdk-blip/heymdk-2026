@@ -928,11 +928,11 @@ const CONTENT = {
   document.getElementById('mainSubheadline').textContent = CONTENT.subheadline;
   document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle;
   document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle;
-  // Results page headline & subheadline (match quiz)
+  // Results page headline & subheadline (use resultsHeadline/resultsSubheadline if available, fallback to main headline/subheadline)
   const resultsHeadlineEl = document.getElementById('resultsHeadline');
   const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
-  if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.headline;
-  if (resultsSubheadlineEl) resultsSubheadlineEl.textContent = CONTENT.subheadline;
+  if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.resultsHeadline || CONTENT.headline;
+  if (resultsSubheadlineEl) resultsSubheadlineEl.innerHTML = CONTENT.resultsSubheadline || CONTENT.subheadline;
 
   // Update booking link
   const bookingSection = document.querySelector('.booking-section');
