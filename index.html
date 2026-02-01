@@ -226,6 +226,9 @@
       margin: 0 0 16px;
       color: var(--color-text);
     }
+    .section-title.gaps-title {
+      margin-bottom: 20px;
+    }
     #resultsSection .result-card, #resultsSection .action-item {
       transition: none;
       display: block;
@@ -1198,8 +1201,7 @@ const CONTENT = {
     if (isMidScore && result.gaps && result.gaps.length) {
       // Plain section title (not inside a card)
       const titleEl = document.createElement('h3');
-      titleEl.className = 'section-title';
-      titleEl.style.marginBottom = '20px';
+      titleEl.className = 'section-title gaps-title';
       titleEl.textContent = 'Priority Gaps & Next Steps';
       contentEl.appendChild(titleEl);
       
@@ -1245,8 +1247,7 @@ const CONTENT = {
     if (isLowScore && result.gaps && result.gaps.length) {
       // Plain section title (not inside a card)
       const titleEl = document.createElement('h3');
-      titleEl.className = 'section-title';
-      titleEl.style.marginBottom = '20px';
+      titleEl.className = 'section-title gaps-title';
       titleEl.textContent = 'Priority Gaps & Next Steps';
       contentEl.appendChild(titleEl);
       
