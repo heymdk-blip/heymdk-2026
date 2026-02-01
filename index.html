@@ -932,6 +932,7 @@ const CONTENT = {
   const resultsHeadlineEl = document.getElementById('resultsHeadline');
   const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
   if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.resultsHeadline || CONTENT.headline;
+  // Note: Using innerHTML for resultsSubheadline to allow <strong> tags from content.json (admin-controlled, not user input)
   if (resultsSubheadlineEl) resultsSubheadlineEl.innerHTML = CONTENT.resultsSubheadline || CONTENT.subheadline;
 
   // Update booking link
