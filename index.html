@@ -1136,13 +1136,95 @@ const CONTENT = {
     const contentEl = document.getElementById('resultsContent');
     contentEl.innerHTML = '';
 
-    if (result.gaps && result.gaps.length) {
+    // Determine display mode based on score
+    const isHighScore = result.score >= 75;
+    const isMidScore = result.score >= 50 && result.score < 75;
+    const isLowScore = result.score < 50;
+
+    // Helper to find matching quick actions for a gap
+    function getQuickActionsForGap(gap) {
+      const actions = [];
+      (CONTENT.actionPlanRules || []).forEach(rule => {
+        if (!rule.triggerGaps || !rule.actions) return;
+        const matches = (rule.triggerGaps || []).some(gapName => 
+          (gap.title || '').includes(gapName) || (gap.desc || '').includes(gapName)
+        );
+        if (matches) {
+          rule.actions.forEach(a => actions.push(a));
+        }
+      });
+      return actions;
+    }
+
+    // HIGH SCORE: Show "Here's Where You're Aligned" with strengths
+    if (isHighScore && result.strengths && result.strengths.length) {
+      const strengthsWrap = document.createElement('div');
+      strengthsWrap.className = 'chapter-card';
+      strengthsWrap.innerHTML = `<h3 class="section-title">Here's Where You're Aligned</h3>`;
+      result.strengths.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'result-card';
+        div.innerHTML = `<h3>${escapeHtml(s.title || '')}</h3><p class="label-desc">${escapeHtml(s.desc || '')}</p>`;
+        strengthsWrap.appendChild(div);
+      });
+      contentEl.appendChild(strengthsWrap);
+    }
+
+    // MID SCORE: Show "Gaps detected" (simple format) + "RECOMMENDED ACTIONS"
+    if (isMidScore && result.gaps && result.gaps.length) {
       const gapsWrap = document.createElement('div');
-      gapsWrap.className = 'unified-gap-card';
-      gapsWrap.innerHTML = `<h3>Priority Gaps & Next Steps</h3>`;
+      gapsWrap.className = 'chapter-card';
+      gapsWrap.innerHTML = `<h3 class="section-title">Gaps detected</h3>`;
       result.gaps.forEach(g => {
         const div = document.createElement('div');
         div.className = 'gap-section';
+        div.innerHTML = `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        gapsWrap.appendChild(div);
+      });
+      contentEl.appendChild(gapsWrap);
+
+      // Show RECOMMENDED ACTIONS section separately for mid score
+      const actionsWrap = document.createElement('div');
+      actionsWrap.className = 'chapter-card';
+      actionsWrap.innerHTML = `<div class="actions-label">RECOMMENDED ACTIONS</div>`;
+      const list = document.createElement('div');
+      list.className = 'action-items';
+      
+      (CONTENT.actionPlanRules || []).forEach(rule => {
+        if (!rule.triggerGaps || !rule.actions) return;
+        const triggersMatched = (rule.triggerGaps || []).some(gapName => 
+          (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))
+        );
+        if (!triggersMatched) return;
+
+        rule.actions.forEach(a => {
+          const ai = document.createElement('div');
+          ai.className = 'action-item';
+          ai.innerHTML = `
+            <div class="action-content">
+              <h4>${escapeHtml(a.title || '')}</h4>
+              <p>${escapeHtml(a.desc || '')}</p>
+            </div>
+          `;
+          list.appendChild(ai);
+        });
+      });
+
+      if (list.children.length) {
+        actionsWrap.appendChild(list);
+        contentEl.appendChild(actionsWrap);
+      }
+    }
+
+    // LOW SCORE: Show "Priority Gaps & Next Steps" with badges + nested QUICK ACTIONS
+    if (isLowScore && result.gaps && result.gaps.length) {
+      const gapsWrap = document.createElement('div');
+      gapsWrap.className = 'chapter-card';
+      gapsWrap.innerHTML = `<h3 class="section-title">Priority Gaps & Next Steps</h3>`;
+      
+      result.gaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'unified-gap-card';
         
         // Add priority badge
         let priorityBadge = '';
@@ -1156,12 +1238,14 @@ const CONTENT = {
         if (g.trend) {
           div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
         }
-        // Quick actions block (if actionPlanRules match)
-        if (g.quickActions && Array.isArray(g.quickActions)) {
+        
+        // Add nested QUICK ACTIONS for this gap
+        const quickActions = getQuickActionsForGap(g);
+        if (quickActions.length > 0) {
           const qa = document.createElement('div');
           qa.className = 'actions-section';
           qa.innerHTML = '<div class="actions-label">QUICK ACTIONS</div>';
-          g.quickActions.forEach(a => {
+          quickActions.forEach(a => {
             const p = document.createElement('div');
             p.className = 'action-bullet';
             p.innerHTML = `<strong>${escapeHtml(a.title)}</strong> — ${escapeHtml(a.desc)}`;
@@ -1169,45 +1253,10 @@ const CONTENT = {
           });
           div.appendChild(qa);
         }
+        
         gapsWrap.appendChild(div);
       });
       contentEl.appendChild(gapsWrap);
-    }
-
-    const actionsWrap = document.createElement('div');
-    actionsWrap.className = 'actions-section';
-    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
-    const list = document.createElement('div');
-    list.className = 'action-items';
-    (CONTENT.actionPlanRules || []).forEach(rule => {
-      if (!rule.triggerGaps || !rule.actions) return;
-      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
-      if (!triggersMatched) {
-        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
-        if (!fallbackMatch) return;
-      }
-
-      rule.actions.forEach(a => {
-        const ai = document.createElement('div');
-        ai.className = 'action-item';
-        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
-        ai.innerHTML = `
-          <div class="action-content">
-            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
-            <h4>${escapeHtml(a.title || '')}</h4>
-            <p>${escapeHtml(a.desc || '')}</p>
-          </div>
-        `;
-        list.appendChild(ai);
-      });
-    });
-
-    if (list.children.length) {
-      actionsWrap.appendChild(list);
-      contentEl.appendChild(actionsWrap);
-    } else {
-      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
-      contentEl.appendChild(actionsWrap);
     }
 
     const bookingLinkEl = document.getElementById('bookingLink');
