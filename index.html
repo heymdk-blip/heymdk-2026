@@ -226,6 +226,9 @@
       margin: 0 0 16px;
       color: var(--color-text);
     }
+    .section-title.gaps-title {
+      margin-bottom: 20px;
+    }
     #resultsSection .result-card, #resultsSection .action-item {
       transition: none;
       display: block;
@@ -301,6 +304,19 @@
       margin-bottom: 16px;
       border-radius: var(--radius-item);
       border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+    }
+    .unified-gap-card strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--color-text);
+    }
+    .unified-gap-card p {
+      margin-bottom: 8px;
+      color: var(--color-muted);
+      line-height: 1.6;
     }
     .gap-section {
       margin-bottom: 20px;
@@ -313,7 +329,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .priority-high {
       background-color: #fee2e2;
@@ -928,11 +944,12 @@ const CONTENT = {
   document.getElementById('mainSubheadline').textContent = CONTENT.subheadline;
   document.getElementById('emailGateTitle').textContent = CONTENT.emailGateTitle;
   document.getElementById('emailGateSubtitle').textContent = CONTENT.emailGateSubtitle;
-  // Results page headline & subheadline (match quiz)
+  // Results page headline & subheadline (use resultsHeadline/resultsSubheadline if available, fallback to main headline/subheadline)
   const resultsHeadlineEl = document.getElementById('resultsHeadline');
   const resultsSubheadlineEl = document.getElementById('resultsSubheadline');
-  if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.headline;
-  if (resultsSubheadlineEl) resultsSubheadlineEl.textContent = CONTENT.subheadline;
+  if (resultsHeadlineEl) resultsHeadlineEl.textContent = CONTENT.resultsHeadline || CONTENT.headline;
+  // Note: Using innerHTML for resultsSubheadline to allow <strong> tags from content.json (admin-controlled, not user input)
+  if (resultsSubheadlineEl) resultsSubheadlineEl.innerHTML = CONTENT.resultsSubheadline || CONTENT.subheadline;
 
   // Update booking link
   const bookingSection = document.querySelector('.booking-section');
@@ -1136,13 +1153,63 @@ const CONTENT = {
     const contentEl = document.getElementById('resultsContent');
     contentEl.innerHTML = '';
 
-    if (result.gaps && result.gaps.length) {
-      const gapsWrap = document.createElement('div');
-      gapsWrap.className = 'unified-gap-card';
-      gapsWrap.innerHTML = `<h3>Priority Gaps & Next Steps</h3>`;
-      result.gaps.forEach(g => {
+    // Determine display mode based on score
+    const isHighScore = result.score >= 75;
+    const isMidScore = result.score >= 50 && result.score < 75;
+    const isLowScore = result.score < 50;
+
+    // Helper to find matching quick actions for a gap
+    function getQuickActionsForGap(gap) {
+      const actions = [];
+      (CONTENT.actionPlanRules || []).forEach(rule => {
+        if (!rule.triggerGaps || !rule.actions) return;
+        const matches = (rule.triggerGaps || []).some(gapName => 
+          (gap.title || '').includes(gapName) || (gap.desc || '').includes(gapName)
+        );
+        if (matches) {
+          rule.actions.forEach(a => actions.push(a));
+        }
+      });
+      return actions;
+    }
+
+    // Helper to sort gaps by priority (high → medium → low)
+    function sortGapsByPriority(gaps) {
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      return gaps.slice().sort((a, b) => {
+        const aPriority = priorityOrder[(a.priority || 'low').toLowerCase()] ?? 3;
+        const bPriority = priorityOrder[(b.priority || 'low').toLowerCase()] ?? 3;
+        return aPriority - bPriority;
+      });
+    }
+
+    // HIGH SCORE: Show "Here's Where You're Aligned" with strengths
+    if (isHighScore && result.strengths && result.strengths.length) {
+      const strengthsWrap = document.createElement('div');
+      strengthsWrap.className = 'chapter-card';
+      strengthsWrap.innerHTML = `<h3 class="section-title">Here's Where You're Aligned</h3>`;
+      result.strengths.forEach(s => {
         const div = document.createElement('div');
-        div.className = 'gap-section';
+        div.className = 'result-card';
+        div.innerHTML = `<h3>${escapeHtml(s.title || '')}</h3><p class="label-desc">${escapeHtml(s.desc || '')}</p>`;
+        strengthsWrap.appendChild(div);
+      });
+      contentEl.appendChild(strengthsWrap);
+    }
+
+    // MID SCORE: Show "Priority Gaps & Next Steps" with badges + nested QUICK ACTIONS (same as low score)
+    if (isMidScore && result.gaps && result.gaps.length) {
+      // Plain section title (not inside a card)
+      const titleEl = document.createElement('h3');
+      titleEl.className = 'section-title gaps-title';
+      titleEl.textContent = 'Priority Gaps & Next Steps';
+      contentEl.appendChild(titleEl);
+      
+      // Sort gaps by priority (high → medium → low)
+      const sortedGaps = sortGapsByPriority(result.gaps);
+      sortedGaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'unified-gap-card';
         
         // Add priority badge
         let priorityBadge = '';
@@ -1156,12 +1223,14 @@ const CONTENT = {
         if (g.trend) {
           div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
         }
-        // Quick actions block (if actionPlanRules match)
-        if (g.quickActions && Array.isArray(g.quickActions)) {
+        
+        // Add nested QUICK ACTIONS for this gap
+        const quickActions = getQuickActionsForGap(g);
+        if (quickActions.length > 0) {
           const qa = document.createElement('div');
           qa.className = 'actions-section';
           qa.innerHTML = '<div class="actions-label">QUICK ACTIONS</div>';
-          g.quickActions.forEach(a => {
+          quickActions.forEach(a => {
             const p = document.createElement('div');
             p.className = 'action-bullet';
             p.innerHTML = `<strong>${escapeHtml(a.title)}</strong> — ${escapeHtml(a.desc)}`;
@@ -1169,45 +1238,55 @@ const CONTENT = {
           });
           div.appendChild(qa);
         }
-        gapsWrap.appendChild(div);
+        
+        contentEl.appendChild(div);
       });
-      contentEl.appendChild(gapsWrap);
     }
 
-    const actionsWrap = document.createElement('div');
-    actionsWrap.className = 'actions-section';
-    actionsWrap.innerHTML = `<div class="actions-label">Recommended actions</div>`;
-    const list = document.createElement('div');
-    list.className = 'action-items';
-    (CONTENT.actionPlanRules || []).forEach(rule => {
-      if (!rule.triggerGaps || !rule.actions) return;
-      const triggersMatched = (rule.triggerGaps || []).some(gapName => (result.gaps || []).some(g => (g.title || '').includes(gapName) || (g.desc || '').includes(gapName))); 
-      if (!triggersMatched) {
-        const fallbackMatch = (rule.triggerGaps || []).some(tg => (tier && ((tier.title||'').includes(tg) || (tier.subtitle||'').includes(tg))));
-        if (!fallbackMatch) return;
-      }
-
-      rule.actions.forEach(a => {
-        const ai = document.createElement('div');
-        ai.className = 'action-item';
-        const priorityClass = a.priority ? (a.priority === 'high' ? 'priority-high' : (a.priority === 'medium' ? 'priority-medium' : 'priority-low')) : '';
-        ai.innerHTML = `
-          <div class="action-content">
-            <div class="priority-badge ${priorityClass}">${a.priority ? a.priority.toUpperCase() : ''}</div>
-            <h4>${escapeHtml(a.title || '')}</h4>
-            <p>${escapeHtml(a.desc || '')}</p>
-          </div>
-        `;
-        list.appendChild(ai);
+    // LOW SCORE: Show "Priority Gaps & Next Steps" with badges + nested QUICK ACTIONS
+    if (isLowScore && result.gaps && result.gaps.length) {
+      // Plain section title (not inside a card)
+      const titleEl = document.createElement('h3');
+      titleEl.className = 'section-title gaps-title';
+      titleEl.textContent = 'Priority Gaps & Next Steps';
+      contentEl.appendChild(titleEl);
+      
+      // Sort gaps by priority (high → medium → low)
+      const sortedGaps = sortGapsByPriority(result.gaps);
+      sortedGaps.forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'unified-gap-card';
+        
+        // Add priority badge
+        let priorityBadge = '';
+        if (g.priority) {
+          const priorityClass = g.priority.toLowerCase();
+          const priorityText = g.priority.charAt(0).toUpperCase() + g.priority.slice(1) + ' Priority';
+          priorityBadge = `<div class="priority-badge priority-${priorityClass}">${priorityText}</div>`;
+        }
+        
+        div.innerHTML = priorityBadge + `<strong>${escapeHtml(g.title || '')}</strong><p>${escapeHtml(g.desc || '')}</p>`;
+        if (g.trend) {
+          div.innerHTML += `<p class="trend-stat">2026 Reality: ${escapeHtml(g.trend)}</p>`;
+        }
+        
+        // Add nested QUICK ACTIONS for this gap
+        const quickActions = getQuickActionsForGap(g);
+        if (quickActions.length > 0) {
+          const qa = document.createElement('div');
+          qa.className = 'actions-section';
+          qa.innerHTML = '<div class="actions-label">QUICK ACTIONS</div>';
+          quickActions.forEach(a => {
+            const p = document.createElement('div');
+            p.className = 'action-bullet';
+            p.innerHTML = `<strong>${escapeHtml(a.title)}</strong> — ${escapeHtml(a.desc)}`;
+            qa.appendChild(p);
+          });
+          div.appendChild(qa);
+        }
+        
+        contentEl.appendChild(div);
       });
-    });
-
-    if (list.children.length) {
-      actionsWrap.appendChild(list);
-      contentEl.appendChild(actionsWrap);
-    } else {
-      actionsWrap.innerHTML += `<div class="action-bullet">We couldn't match specific actions automatically — consider reviewing your full assessment for gaps and priorities.</div>`;
-      contentEl.appendChild(actionsWrap);
     }
 
     const bookingLinkEl = document.getElementById('bookingLink');
