@@ -1157,6 +1157,16 @@ const CONTENT = {
       return actions;
     }
 
+    // Helper to sort gaps by priority (high → medium → low)
+    function sortGapsByPriority(gaps) {
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      return gaps.slice().sort((a, b) => {
+        const aPriority = priorityOrder[(a.priority || 'low').toLowerCase()] ?? 3;
+        const bPriority = priorityOrder[(b.priority || 'low').toLowerCase()] ?? 3;
+        return aPriority - bPriority;
+      });
+    }
+
     // HIGH SCORE: Show "Here's Where You're Aligned" with strengths
     if (isHighScore && result.strengths && result.strengths.length) {
       const strengthsWrap = document.createElement('div');
@@ -1177,7 +1187,9 @@ const CONTENT = {
       gapsWrap.className = 'chapter-card';
       gapsWrap.innerHTML = `<h3 class="section-title">Priority Gaps & Next Steps</h3>`;
       
-      result.gaps.forEach(g => {
+      // Sort gaps by priority (high → medium → low)
+      const sortedGaps = sortGapsByPriority(result.gaps);
+      sortedGaps.forEach(g => {
         const div = document.createElement('div');
         div.className = 'unified-gap-card';
         
@@ -1220,7 +1232,9 @@ const CONTENT = {
       gapsWrap.className = 'chapter-card';
       gapsWrap.innerHTML = `<h3 class="section-title">Priority Gaps & Next Steps</h3>`;
       
-      result.gaps.forEach(g => {
+      // Sort gaps by priority (high → medium → low)
+      const sortedGaps = sortGapsByPriority(result.gaps);
+      sortedGaps.forEach(g => {
         const div = document.createElement('div');
         div.className = 'unified-gap-card';
         
